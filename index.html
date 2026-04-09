@@ -4,481 +4,648 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI議事録</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #1a1a24;
+      --border: rgba(255,255,255,0.07);
+      --border-active: rgba(255,255,255,0.18);
+      --accent: #7c6bff;
+      --accent2: #a78bfa;
+      --accent-glow: rgba(124,107,255,0.25);
+      --text: #f0f0f8;
+      --text-muted: #6b6b80;
+      --text-dim: #9090a8;
+      --success: #34d399;
+      --danger: #f87171;
+      --font: 'Noto Sans JP', sans-serif;
+      --mono: 'DM Mono', monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 0;
-      background: #f6f7fb;
-      color: #222;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
+
     .wrap {
-      max-width: 760px;
+      max-width: 680px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 40px 20px 80px;
     }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 16px;
+
+    /* header */
+    .header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      background: rgba(124,107,255,0.12);
+      border: 1px solid rgba(124,107,255,0.25);
+      border-radius: 100px;
+      padding: 4px 12px;
       margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.06);
     }
-    h1, h2 {
-      margin: 0 0 12px;
+    .header-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s ease-in-out infinite;
     }
-    input, button {
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    h1 {
+      font-size: clamp(28px, 6vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header-sub {
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    /* step cards */
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+    .step:hover { border-color: var(--border-active); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .step:nth-child(1) { animation-delay: 0.05s; }
+    .step:nth-child(2) { animation-delay: 0.10s; }
+    .step:nth-child(3) { animation-delay: 0.15s; }
+    .step:nth-child(4) { animation-delay: 0.20s; }
+    .step:nth-child(5) { animation-delay: 0.25s; }
+    .step:nth-child(6) { animation-delay: 0.30s; }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(124,107,255,0.15);
+      border: 1px solid rgba(124,107,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent2);
+      font-family: var(--mono);
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* inputs */
+    input[type="text"] {
       width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      border: 1px solid #d8dce7;
-      border-radius: 10px;
-      font-size: 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 15px;
+      font-family: var(--font);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    button {
-      background: #111827;
-      color: white;
-      border: 0;
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    input::placeholder { color: var(--text-muted); }
+
+    /* buttons */
+    .btn {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font);
       cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 0.15s;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-    button.secondary {
-      background: #eef2ff;
-      color: #111827;
+    .btn:active:not(:disabled) { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
     }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .btn-primary:hover:not(:disabled) {
+      background: #8f7fff;
+      box-shadow: 0 4px 28px rgba(124,107,255,0.45);
+    }
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background: #22222e;
+      border-color: var(--border-active);
+      color: var(--text);
+    }
+    .btn-danger {
+      background: rgba(248,113,113,0.1);
+      color: var(--danger);
+      border: 1px solid rgba(248,113,113,0.25);
+    }
+    .btn-danger:hover:not(:disabled) { background: rgba(248,113,113,0.18); }
+    .btn-success {
+      background: rgba(52,211,153,0.12);
+      color: var(--success);
+      border: 1px solid rgba(52,211,153,0.25);
+    }
+    .btn-success:hover:not(:disabled) { background: rgba(52,211,153,0.2); }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .spacer { height: 12px; }
+
+    /* participants */
+    .participant-list { display: flex; flex-direction: column; gap: 4px; }
+    .chk-label {
+      display: flex;
+      align-items: center;
       gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      transition: border-color 0.15s;
+      font-size: 14px;
+      color: var(--text-dim);
     }
-    .status {
+    .chk-label:hover { border-color: var(--border-active); color: var(--text); }
+    .chk-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
+
+    /* status */
+    .status-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13px;
+      font-family: var(--mono);
+      color: var(--text-dim);
+      min-height: 48px;
       white-space: pre-wrap;
-      background: #f3f4f6;
-      padding: 10px;
-      border-radius: 10px;
-      min-height: 40px;
+      line-height: 1.6;
     }
-    .list {
-      display: grid;
-      gap: 8px;
+
+    /* meeting tag */
+    .meeting-tag {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
     }
-    label.chk {
+    .meeting-tag span { color: var(--accent2); }
+
+    /* transcripts */
+    .transcript-list { display: flex; flex-direction: column; gap: 8px; }
+    .transcript-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .transcript-time {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      white-space: nowrap;
+      padding-top: 2px;
+      min-width: 36px;
+    }
+    .transcript-body { flex: 1; }
+    .transcript-speaker {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent2);
+      margin-bottom: 3px;
+      letter-spacing: 0.02em;
+    }
+    .transcript-text { font-size: 14px; color: var(--text-dim); line-height: 1.55; }
+
+    /* minutes */
+    .minutes-block { display: flex; flex-direction: column; gap: 12px; }
+    .minutes-section {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .minutes-section-head {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .minutes-section-body { padding: 14px; font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+    .minutes-list-item {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
       display: flex;
       gap: 8px;
-      align-items: center;
-      padding: 8px 0;
+      align-items: flex-start;
     }
-    label.chk input {
-      width: auto;
+    .minutes-list-item:last-child { border-bottom: none; }
+    .minutes-list-item::before { content: '–'; color: var(--accent); flex-shrink: 0; }
+
+    .empty-state { text-align: center; color: var(--text-muted); font-size: 13px; padding: 24px 0; }
+
+    /* rec dot */
+    .rec-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      animation: recPulse 1s ease-in-out infinite;
     }
-    pre {
-      white-space: pre-wrap;
-      word-break: break-word;
-      background: #f9fafb;
-      padding: 12px;
-      border-radius: 10px;
-    }
-    .muted {
-      color: #666;
-      font-size: 13px;
+    @keyframes recPulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(248,113,113,0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(248,113,113,0); }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>AI議事録 MVP</h1>
 
-    <div class="card">
-      <h2>1. 参加者登録</h2>
-      <input id="p_name" placeholder="名前">
-      <div style="height:10px"></div>
-      <div class="row">
-        <button type="button" id="startSample">声サンプル録音開始</button>
-        <button type="button" id="stopSample" class="secondary">停止して保存</button>
+    <div class="header">
+      <div class="header-badge">AI 議事録</div>
+      <h1>Meeting<br>Minutes</h1>
+      <p class="header-sub">録音・文字起こし・議事録生成を自動化</p>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">01</div>
+        <div class="step-title">参加者登録</div>
       </div>
-      <div style="height:10px"></div>
-      <button type="button" id="registerParticipant">参加者を登録</button>
-    </div>
-
-    <div class="card">
-      <h2>2. 会議作成</h2>
-      <input id="meeting_title" placeholder="会議名">
-      <div style="height:10px"></div>
-      <div id="participants" class="list"></div>
-      <div style="height:10px"></div>
-      <button type="button" id="createMeeting">会議を作成</button>
-      <p class="muted" id="meetingInfo"></p>
-    </div>
-
-    <div class="card">
-      <h2>3. 会議録音</h2>
-      <div class="row">
-        <button type="button" id="startMeetingRec">会議録音開始</button>
-        <button type="button" id="stopMeetingRec" class="secondary">会議録音停止</button>
+      <input id="p_name" type="text" placeholder="名前を入力">
+      <div class="spacer"></div>
+      <div class="btn-row">
+        <button class="btn btn-success" id="startSample">録音開始</button>
+        <button class="btn btn-ghost" id="stopSample" disabled>停止して保存</button>
       </div>
-      <div style="height:10px"></div>
-      <button type="button" id="uploadMeeting">会議音声をアップロード</button>
-      <div style="height:10px"></div>
-      <button type="button" id="processMeeting">議事録を生成</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="registerParticipant">参加者を登録</button>
     </div>
 
-    <div class="card">
-      <h2>4. 状態</h2>
-      <div id="status" class="status"></div>
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">02</div>
+        <div class="step-title">会議作成</div>
+      </div>
+      <input id="meeting_title" type="text" placeholder="会議名を入力">
+      <div class="spacer"></div>
+      <div id="participants" class="participant-list"></div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="createMeeting">会議を作成</button>
+      <div id="meetingInfo"></div>
     </div>
 
-    <div class="card">
-      <h2>5. 議事録結果</h2>
-      <pre id="result"></pre>
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">03</div>
+        <div class="step-title">会議録音</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-danger" id="startMeetingRec">録音開始</button>
+        <button class="btn btn-ghost" id="stopMeetingRec" disabled>録音停止</button>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" id="uploadMeeting">音声をアップロード</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="processMeeting">議事録を生成</button>
     </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">04</div>
+        <div class="step-title">ステータス</div>
+      </div>
+      <div id="status" class="status-box">初期化中...</div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">05</div>
+        <div class="step-title">発言ログ</div>
+      </div>
+      <div id="transcripts"><p class="empty-state">議事録生成後に表示されます</p></div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">06</div>
+        <div class="step-title">議事録結果</div>
+      </div>
+      <div id="result"><p class="empty-state">議事録生成後に表示されます</p></div>
+    </div>
+
   </div>
-
   <script>
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbz4ctET6SWq0dKJ69vTehPnqdo-2IFojwtNefLrKlIECcuvPgCxGVTMoxgLWZm5OzTt/exec';
 
-  let sampleRecorder = null;
-  let sampleChunks = [];
-  let sampleBlob = null;
-  let sampleStream = null;
+  let sampleRecorder=null,sampleChunks=[],sampleBlob=null,sampleStream=null;
+  let meetingRecorder=null,meetingChunks=[],meetingBlob=null,meetingStream=null;
+  let currentMeetingId=null;
 
-  let meetingRecorder = null;
-  let meetingChunks = [];
-  let meetingBlob = null;
-  let meetingStream = null;
-
-  let currentMeetingId = null;
-
-  const els = {
-    startSample: document.getElementById('startSample'),
-    stopSample: document.getElementById('stopSample'),
-    registerParticipant: document.getElementById('registerParticipant'),
-    createMeeting: document.getElementById('createMeeting'),
-    startMeetingRec: document.getElementById('startMeetingRec'),
-    stopMeetingRec: document.getElementById('stopMeetingRec'),
-    uploadMeeting: document.getElementById('uploadMeeting'),
-    processMeeting: document.getElementById('processMeeting'),
-    status: document.getElementById('status'),
-    result: document.getElementById('result'),
-    pName: document.getElementById('p_name'),
-    meetingTitle: document.getElementById('meeting_title'),
-    meetingInfo: document.getElementById('meetingInfo'),
-    participants: document.getElementById('participants')
+  const els={
+    startSample:document.getElementById('startSample'),
+    stopSample:document.getElementById('stopSample'),
+    registerParticipant:document.getElementById('registerParticipant'),
+    createMeeting:document.getElementById('createMeeting'),
+    startMeetingRec:document.getElementById('startMeetingRec'),
+    stopMeetingRec:document.getElementById('stopMeetingRec'),
+    uploadMeeting:document.getElementById('uploadMeeting'),
+    processMeeting:document.getElementById('processMeeting'),
+    status:document.getElementById('status'),
+    result:document.getElementById('result'),
+    pName:document.getElementById('p_name'),
+    meetingTitle:document.getElementById('meeting_title'),
+    meetingInfo:document.getElementById('meetingInfo'),
+    participants:document.getElementById('participants'),
+    transcripts:document.getElementById('transcripts'),
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
-    setInitialButtons();
     await refreshParticipants();
     setStatus('準備完了');
   });
 
-  function setInitialButtons() {
-    els.startSample.textContent = '声サンプル録音開始';
-    els.stopSample.textContent = '停止して保存';
-    els.startMeetingRec.textContent = '会議録音開始';
-    els.stopMeetingRec.textContent = '会議録音停止';
-
-    els.stopSample.disabled = true;
-    els.stopMeetingRec.disabled = true;
-  }
-
-  function setSampleRecordingUi(isRecording) {
-    els.startSample.textContent = isRecording ? '声サンプル録音中...' : '声サンプル録音開始';
-    els.startSample.disabled = isRecording;
-    els.stopSample.disabled = !isRecording;
-  }
-
-  function setMeetingRecordingUi(isRecording) {
-    els.startMeetingRec.textContent = isRecording ? '会議録音中...' : '会議録音開始';
-    els.startMeetingRec.disabled = isRecording;
-    els.stopMeetingRec.disabled = !isRecording;
-  }
-
-  document.getElementById('startSample').addEventListener('click', async () => {
+  els.startSample.addEventListener('click', async () => {
     try {
-      sampleBlob = null;
-      sampleChunks = [];
-      sampleStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      sampleRecorder = new MediaRecorder(sampleStream);
-
-      sampleRecorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          sampleChunks.push(event.data);
-        }
+      sampleBlob=null; sampleChunks=[];
+      sampleStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      sampleRecorder=new MediaRecorder(sampleStream);
+      sampleRecorder.ondataavailable=e=>{if(e.data?.size>0)sampleChunks.push(e.data);};
+      sampleRecorder.onstop=()=>{
+        sampleBlob=new Blob(sampleChunks,{type:sampleRecorder.mimeType||'audio/webm'});
+        stopTracks(sampleStream); sampleStream=null;
+        els.startSample.innerHTML='録音開始';
+        els.startSample.disabled=false; els.stopSample.disabled=true;
+        setStatus('声サンプルを保存しました');
       };
-
-      sampleRecorder.onstop = () => {
-        sampleBlob = new Blob(sampleChunks, { type: sampleRecorder.mimeType || 'audio/webm' });
-        stopTracks(sampleStream);
-        sampleStream = null;
-        setSampleRecordingUi(false);
-        setStatus('声サンプル録音を保存しました');
-      };
-
       sampleRecorder.start();
-      setSampleRecordingUi(true);
+      els.startSample.innerHTML='<span class="rec-dot"></span>録音中...';
+      els.startSample.disabled=true; els.stopSample.disabled=false;
       setStatus('声サンプル録音中');
-    } catch (err) {
-      setSampleRecordingUi(false);
-      setStatus('声サンプル録音開始エラー: ' + (err.message || err));
-    }
+    } catch(err){ els.startSample.disabled=false; setStatus('録音開始エラー: '+err.message); }
   });
 
-  document.getElementById('stopSample').addEventListener('click', async () => {
-    try {
-      if (!sampleRecorder) {
-        setStatus('先に声サンプル録音開始を押してください');
-        return;
-      }
-      if (sampleRecorder.state !== 'inactive') {
-        sampleRecorder.stop();
-      }
-    } catch (err) {
-      setSampleRecordingUi(false);
-      setStatus('声サンプル停止エラー: ' + (err.message || err));
-    }
+  els.stopSample.addEventListener('click',()=>{
+    if(sampleRecorder&&sampleRecorder.state!=='inactive') sampleRecorder.stop();
   });
 
-  document.getElementById('registerParticipant').addEventListener('click', async () => {
-    try {
-      const name = els.pName.value.trim();
-      if (!name) return alert('名前を入力してください');
-      if (!sampleBlob) return alert('先に声サンプルを録音してください');
+  els.registerParticipant.addEventListener('click', async () => {
+    const name=els.pName.value.trim();
+    if(!name) return alert('名前を入力してください');
+    if(!sampleBlob) return alert('先に声サンプルを録音してください');
+    setStatus('参加者登録中...');
+    const sampleBase64=await blobToBase64(sampleBlob);
+    await postNoCors({action:'registerParticipant',name,displayName:name,sampleBase64,mimeType:sampleBlob.type||'audio/webm'});
+    setStatus('参加者登録を送信しました');
+    els.pName.value=''; sampleBlob=null;
+    setTimeout(async()=>{await refreshParticipants(); setStatus('参加者一覧を更新しました');},1500);
+  });
 
-      setStatus('参加者登録中...');
-      const sampleBase64 = await blobToBase64(sampleBlob);
+  els.createMeeting.addEventListener('click', async () => {
+    const title=els.meetingTitle.value.trim();
+    if(!title) return alert('会議名を入力してください');
+    const ids=[...document.querySelectorAll('input[name="participant"]:checked')].map(el=>el.value);
+    const res=await jsonp('createMeeting',{title,participantIds:ids.join(',')});
+    if(!res.ok) return alert(res.error||'会議作成失敗');
+    currentMeetingId=res.meetingId;
+    els.meetingInfo.innerHTML='<div class="meeting-tag">ID <span>'+escapeHtml(currentMeetingId)+'</span></div>';
+    els.transcripts.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
+    els.result.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
+    setStatus('会議を作成しました');
+  });
 
-      await postNoCors({
-        action: 'registerParticipant',
-        name: name,
-        displayName: name,
-        sampleBase64: sampleBase64,
-        mimeType: sampleBlob.type || 'audio/webm'
+  els.startMeetingRec.addEventListener('click', async () => {
+    if(!currentMeetingId) return alert('先に会議を作成してください');
+    meetingBlob=null; meetingChunks=[];
+    meetingStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    meetingRecorder=new MediaRecorder(meetingStream);
+    meetingRecorder.ondataavailable=e=>{if(e.data?.size>0)meetingChunks.push(e.data);};
+    meetingRecorder.onstop=()=>{
+      meetingBlob=new Blob(meetingChunks,{type:meetingRecorder.mimeType||'audio/webm'});
+      stopTracks(meetingStream); meetingStream=null;
+      els.startMeetingRec.innerHTML='録音開始';
+      els.startMeetingRec.disabled=false; els.stopMeetingRec.disabled=true;
+      setStatus('会議録音を保存しました');
+    };
+    meetingRecorder.start();
+    els.startMeetingRec.innerHTML='<span class="rec-dot"></span>録音中...';
+    els.startMeetingRec.disabled=true; els.stopMeetingRec.disabled=false;
+    setStatus('会議録音中');
+  });
+
+  els.stopMeetingRec.addEventListener('click',()=>{
+    if(meetingRecorder&&meetingRecorder.state!=='inactive') meetingRecorder.stop();
+  });
+
+  els.uploadMeeting.addEventListener('click', async () => {
+    if(!currentMeetingId) return alert('先に会議を作成してください');
+    if(!meetingBlob) return alert('先に会議を録音してください');
+    setStatus('音声アップロード中...');
+    const audioBase64=await blobToBase64(meetingBlob);
+    await postNoCors({action:'uploadMeetingAudio',meetingId:currentMeetingId,audioBase64,mimeType:meetingBlob.type||'audio/webm'});
+    setStatus('音声の送信を開始しました');
+  });
+
+  els.processMeeting.addEventListener('click', async () => {
+    if(!currentMeetingId) return alert('先に会議を作成してください');
+    setStatus('議事録生成中...\n文字起こしに数分かかることがあります');
+    const res=await jsonp('processMeeting',{meetingId:currentMeetingId});
+    if(!res.ok) return alert(res.error||'処理失敗');
+
+    const segments=res.segments||[];
+    if(segments.length===0){
+      els.transcripts.innerHTML='<p class="empty-state">発言ログなし</p>';
+    } else {
+      els.transcripts.innerHTML='<div class="transcript-list"></div>';
+      const list=els.transcripts.querySelector('.transcript-list');
+      segments.forEach(s=>{
+        const name=s.speaker_name||s.speaker_label||'不明';
+        const sec=(s.start_sec!==''&&s.start_sec!==null)?Math.floor(Number(s.start_sec)):null;
+        const timeStr=sec!==null?formatTime(sec):'';
+        const div=document.createElement('div');
+        div.className='transcript-item';
+        div.innerHTML=
+          '<div class="transcript-time">'+escapeHtml(timeStr)+'</div>'+
+          '<div class="transcript-body">'+
+            '<div class="transcript-speaker">'+escapeHtml(name)+'</div>'+
+            '<div class="transcript-text">'+escapeHtml(s.text||'')+'</div>'+
+          '</div>';
+        list.appendChild(div);
       });
-
-      setStatus('参加者登録を送信しました');
-      els.pName.value = '';
-      sampleBlob = null;
-
-      setTimeout(async () => {
-        await refreshParticipants();
-        setStatus('参加者一覧を更新しました');
-      }, 1500);
-    } catch (err) {
-      setStatus('参加者登録エラー: ' + (err.message || err));
     }
-  });
 
-  document.getElementById('createMeeting').addEventListener('click', async () => {
-    try {
-      const title = els.meetingTitle.value.trim();
-      if (!title) return alert('会議名を入力してください');
-
-      const ids = [...document.querySelectorAll('input[name="participant"]:checked')].map(el => el.value);
-
-      const res = await jsonp('createMeeting', {
-        title: title,
-        participantIds: ids.join(',')
-      });
-
-      if (!res.ok) {
-        alert(res.error || '会議作成失敗');
-        return;
+    const m=res.minutes||{};
+    els.result.innerHTML='';
+    const sections=[
+      {key:'summary',label:'サマリー',type:'text'},
+      {key:'decisions',label:'決定事項',type:'list'},
+      {key:'todos',label:'ToDo',type:'list'},
+      {key:'deadlines',label:'デッドライン',type:'list'},
+      {key:'pending_items',label:'保留事項',type:'list'},
+      {key:'next_actions',label:'次のアクション',type:'list'},
+    ];
+    const block=document.createElement('div');
+    block.className='minutes-block';
+    sections.forEach(sec=>{
+      const val=m[sec.key];
+      if(!val||(Array.isArray(val)&&val.length===0)) return;
+      const section=document.createElement('div');
+      section.className='minutes-section';
+      section.innerHTML='<div class="minutes-section-head">'+escapeHtml(sec.label)+'</div>';
+      const body=document.createElement('div');
+      body.className='minutes-section-body';
+      if(sec.type==='text'){
+        body.textContent=val;
+      } else {
+        (Array.isArray(val)?val:[]).forEach(item=>{
+          const row=document.createElement('div');
+          row.className='minutes-list-item';
+          const text=typeof item==='object'?JSON.stringify(item,null,0).replace(/[{}"]/g,'').replace(/,/g,' / '):String(item);
+          row.appendChild(document.createTextNode(text));
+          body.appendChild(row);
+        });
       }
-
-      currentMeetingId = res.meetingId;
-      els.meetingInfo.textContent = 'meetingId: ' + currentMeetingId;
-      setStatus('会議を作成しました');
-    } catch (err) {
-      setStatus('会議作成エラー: ' + (err.message || err));
+      section.appendChild(body);
+      block.appendChild(section);
+    });
+    if(!block.children.length){
+      els.result.innerHTML='<p class="empty-state">議事録データなし</p>';
+    } else {
+      els.result.appendChild(block);
     }
+    setStatus('議事録生成が完了しました ✓');
   });
 
-  document.getElementById('startMeetingRec').addEventListener('click', async () => {
-    try {
-      if (!currentMeetingId) return alert('先に会議を作成してください');
-
-      meetingBlob = null;
-      meetingChunks = [];
-      meetingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      meetingRecorder = new MediaRecorder(meetingStream);
-
-      meetingRecorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          meetingChunks.push(event.data);
-        }
-      };
-
-      meetingRecorder.onstop = () => {
-        meetingBlob = new Blob(meetingChunks, { type: meetingRecorder.mimeType || 'audio/webm' });
-        stopTracks(meetingStream);
-        meetingStream = null;
-        setMeetingRecordingUi(false);
-        setStatus('会議録音を保存しました');
-      };
-
-      meetingRecorder.start();
-      setMeetingRecordingUi(true);
-      setStatus('会議録音中');
-    } catch (err) {
-      setMeetingRecordingUi(false);
-      setStatus('会議録音開始エラー: ' + (err.message || err));
-    }
-  });
-
-  document.getElementById('stopMeetingRec').addEventListener('click', async () => {
-    try {
-      if (!meetingRecorder) {
-        setStatus('先に会議録音開始を押してください');
-        return;
-      }
-      if (meetingRecorder.state !== 'inactive') {
-        meetingRecorder.stop();
-      }
-    } catch (err) {
-      setMeetingRecordingUi(false);
-      setStatus('会議録音停止エラー: ' + (err.message || err));
-    }
-  });
-
-  document.getElementById('uploadMeeting').addEventListener('click', async () => {
-    try {
-      if (!currentMeetingId) return alert('先に会議を作成してください');
-      if (!meetingBlob) return alert('先に会議を録音してください');
-
-      setStatus('会議音声アップロード中...');
-      const audioBase64 = await blobToBase64(meetingBlob);
-
-      await postNoCors({
-        action: 'uploadMeetingAudio',
-        meetingId: currentMeetingId,
-        audioBase64: audioBase64,
-        mimeType: meetingBlob.type || 'audio/webm'
-      });
-
-      setStatus('会議音声の送信を開始しました');
-    } catch (err) {
-      setStatus('アップロードエラー: ' + (err.message || err));
-    }
-  });
-
-  document.getElementById('processMeeting').addEventListener('click', async () => {
-    try {
-      if (!currentMeetingId) return alert('先に会議を作成してください');
-
-      setStatus('議事録生成中... 数分かかることがあります');
-      const res = await jsonp('processMeeting', {
-        meetingId: currentMeetingId
-      });
-
-      if (!res.ok) {
-        alert(res.error || '処理失敗');
-        return;
-      }
-
-      els.result.textContent = JSON.stringify(res.minutes, null, 2);
-      setStatus('議事録生成が完了しました');
-    } catch (err) {
-      setStatus('議事録生成エラー: ' + (err.message || err));
-    }
-  });
-
-  async function refreshParticipants() {
-    const res = await jsonp('listParticipants', {});
-    const box = els.participants;
-    box.innerHTML = '';
-
-    (res.participants || []).forEach(p => {
-      const label = document.createElement('label');
-      label.className = 'chk';
-      label.innerHTML =
-        '<input type="checkbox" name="participant" value="' + escapeHtml(p.participant_id) + '">' +
-        '<span>' + escapeHtml(p.display_name || p.name) + '</span>';
-      box.appendChild(label);
+  async function refreshParticipants(){
+    const res=await jsonp('listParticipants',{});
+    els.participants.innerHTML='';
+    (res.participants||[]).forEach(p=>{
+      const label=document.createElement('label');
+      label.className='chk-label';
+      label.innerHTML='<input type="checkbox" name="participant" value="'+escapeHtml(p.participant_id)+'"><span>'+escapeHtml(p.display_name||p.name)+'</span>';
+      els.participants.appendChild(label);
     });
   }
 
-  function jsonp(action, params) {
-    return new Promise((resolve, reject) => {
-      const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-      const script = document.createElement('script');
-      const url = new URL(GAS_URL);
+  function formatTime(totalSec){
+    const m=Math.floor(totalSec/60), s=totalSec%60;
+    return m+':'+String(s).padStart(2,'0');
+  }
 
-      url.searchParams.set('api', '1');
-      url.searchParams.set('action', action);
-      url.searchParams.set('callback', callbackName);
-
-      Object.keys(params || {}).forEach(key => {
-        url.searchParams.set(key, params[key]);
-      });
-
-      let done = false;
-
-      window[callbackName] = (data) => {
-        done = true;
-        resolve(data);
-        cleanup();
-      };
-
-      script.onerror = () => {
-        reject(new Error('JSONP通信に失敗しました'));
-        cleanup();
-      };
-
-      function cleanup() {
-        if (window[callbackName]) delete window[callbackName];
-        if (script.parentNode) script.parentNode.removeChild(script);
-      }
-
+  function jsonp(action,params){
+    return new Promise((resolve,reject)=>{
+      const cbName='cb_'+Date.now()+'_'+Math.floor(Math.random()*1e5);
+      const script=document.createElement('script');
+      const url=new URL(GAS_URL);
+      url.searchParams.set('api','1');
+      url.searchParams.set('action',action);
+      url.searchParams.set('callback',cbName);
+      Object.keys(params||{}).forEach(k=>url.searchParams.set(k,params[k]));
+      let done=false;
+      window[cbName]=data=>{done=true;resolve(data);cleanup();};
+      script.onerror=()=>{reject(new Error('JSONP通信に失敗しました'));cleanup();};
+      function cleanup(){delete window[cbName];script.parentNode?.removeChild(script);}
       document.body.appendChild(script);
-      script.src = url.toString();
-
-      setTimeout(() => {
-        if (!done) {
-          reject(new Error('JSONP通信がタイムアウトしました'));
-          cleanup();
-        }
-      }, 120000);
+      script.src=url.toString();
+      setTimeout(()=>{if(!done){reject(new Error('タイムアウト'));cleanup();}},120000);
     });
   }
 
-  async function postNoCors(body) {
-    await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify(body)
+  async function postNoCors(body){
+    await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  }
+
+  function blobToBase64(blob){
+    return new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onloadend=()=>resolve(String(r.result).split(',')[1]);
+      r.onerror=reject;
+      r.readAsDataURL(blob);
     });
   }
 
-  function blobToBase64(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const dataUrl = reader.result;
-        resolve(String(dataUrl).split(',')[1]);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  function stopTracks(stream){stream?.getTracks().forEach(t=>t.stop());}
+  function setStatus(msg){els.status.textContent=msg;}
+  function escapeHtml(str){
+    return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
   }
-
-  function stopTracks(stream) {
-    if (!stream) return;
-    stream.getTracks().forEach(track => track.stop());
-  }
-
-  function setStatus(msg) {
-    els.status.textContent = msg;
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
-</script>
+  </script>
 </body>
 </html>
