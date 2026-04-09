@@ -132,305 +132,353 @@
   </div>
 
   <script>
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbz4ctET6SWq0dKJ69vTehPnqdo-2IFojwtNefLrKlIECcuvPgCxGVTMoxgLWZm5OzTt/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbz4ctET6SWq0dKJ69vTehPnqdo-2IFojwtNefLrKlIECcuvPgCxGVTMoxgLWZm5OzTt/exec';
 
-    let sampleRecorder = null;
-    let sampleChunks = [];
-    let sampleBlob = null;
-    let sampleStream = null;
+  let sampleRecorder = null;
+  let sampleChunks = [];
+  let sampleBlob = null;
+  let sampleStream = null;
 
-    let meetingRecorder = null;
-    let meetingChunks = [];
-    let meetingBlob = null;
-    let meetingStream = null;
+  let meetingRecorder = null;
+  let meetingChunks = [];
+  let meetingBlob = null;
+  let meetingStream = null;
 
-    let currentMeetingId = null;
+  let currentMeetingId = null;
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      await refreshParticipants();
-      setStatus('準備完了');
-    });
+  const els = {
+    startSample: document.getElementById('startSample'),
+    stopSample: document.getElementById('stopSample'),
+    registerParticipant: document.getElementById('registerParticipant'),
+    createMeeting: document.getElementById('createMeeting'),
+    startMeetingRec: document.getElementById('startMeetingRec'),
+    stopMeetingRec: document.getElementById('stopMeetingRec'),
+    uploadMeeting: document.getElementById('uploadMeeting'),
+    processMeeting: document.getElementById('processMeeting'),
+    status: document.getElementById('status'),
+    result: document.getElementById('result'),
+    pName: document.getElementById('p_name'),
+    meetingTitle: document.getElementById('meeting_title'),
+    meetingInfo: document.getElementById('meetingInfo'),
+    participants: document.getElementById('participants')
+  };
 
-    document.getElementById('startSample').addEventListener('click', async () => {
-      try {
-        sampleBlob = null;
-        sampleChunks = [];
-        sampleStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        sampleRecorder = new MediaRecorder(sampleStream);
+  document.addEventListener('DOMContentLoaded', async () => {
+    setInitialButtons();
+    await refreshParticipants();
+    setStatus('準備完了');
+  });
 
-        sampleRecorder.ondataavailable = (event) => {
-          if (event.data && event.data.size > 0) {
-            sampleChunks.push(event.data);
-          }
-        };
+  function setInitialButtons() {
+    els.startSample.textContent = '声サンプル録音開始';
+    els.stopSample.textContent = '停止して保存';
+    els.startMeetingRec.textContent = '会議録音開始';
+    els.stopMeetingRec.textContent = '会議録音停止';
 
-        sampleRecorder.onstop = () => {
-          sampleBlob = new Blob(sampleChunks, { type: sampleRecorder.mimeType || 'audio/webm' });
-          stopTracks(sampleStream);
-          sampleStream = null;
-          setStatus('声サンプル録音を保存しました');
-        };
+    els.stopSample.disabled = true;
+    els.stopMeetingRec.disabled = true;
+  }
 
-        sampleRecorder.start();
-        setStatus('声サンプル録音中');
-      } catch (err) {
-        setStatus('声サンプル録音開始エラー: ' + (err.message || err));
-      }
-    });
+  function setSampleRecordingUi(isRecording) {
+    els.startSample.textContent = isRecording ? '声サンプル録音中...' : '声サンプル録音開始';
+    els.startSample.disabled = isRecording;
+    els.stopSample.disabled = !isRecording;
+  }
 
-    document.getElementById('stopSample').addEventListener('click', async () => {
-      try {
-        if (!sampleRecorder) {
-          setStatus('先に声サンプル録音開始を押してください');
-          return;
+  function setMeetingRecordingUi(isRecording) {
+    els.startMeetingRec.textContent = isRecording ? '会議録音中...' : '会議録音開始';
+    els.startMeetingRec.disabled = isRecording;
+    els.stopMeetingRec.disabled = !isRecording;
+  }
+
+  document.getElementById('startSample').addEventListener('click', async () => {
+    try {
+      sampleBlob = null;
+      sampleChunks = [];
+      sampleStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      sampleRecorder = new MediaRecorder(sampleStream);
+
+      sampleRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          sampleChunks.push(event.data);
         }
-        if (sampleRecorder.state !== 'inactive') {
-          sampleRecorder.stop();
-        }
-      } catch (err) {
-        setStatus('声サンプル停止エラー: ' + (err.message || err));
-      }
-    });
+      };
 
-    document.getElementById('registerParticipant').addEventListener('click', async () => {
-      try {
-        const name = document.getElementById('p_name').value.trim();
-        if (!name) return alert('名前を入力してください');
-        if (!sampleBlob) return alert('先に声サンプルを録音してください');
+      sampleRecorder.onstop = () => {
+        sampleBlob = new Blob(sampleChunks, { type: sampleRecorder.mimeType || 'audio/webm' });
+        stopTracks(sampleStream);
+        sampleStream = null;
+        setSampleRecordingUi(false);
+        setStatus('声サンプル録音を保存しました');
+      };
 
-        setStatus('参加者登録中...');
-        const sampleBase64 = await blobToBase64(sampleBlob);
-
-        await postNoCors({
-          action: 'registerParticipant',
-          name: name,
-          displayName: name,
-          sampleBase64: sampleBase64,
-          mimeType: sampleBlob.type || 'audio/webm'
-        });
-
-        setStatus('参加者登録を送信しました');
-        document.getElementById('p_name').value = '';
-        sampleBlob = null;
-
-        setTimeout(async () => {
-          await refreshParticipants();
-          setStatus('参加者一覧を更新しました');
-        }, 1500);
-      } catch (err) {
-        setStatus('参加者登録エラー: ' + (err.message || err));
-      }
-    });
-
-    document.getElementById('createMeeting').addEventListener('click', async () => {
-      try {
-        const title = document.getElementById('meeting_title').value.trim();
-        if (!title) return alert('会議名を入力してください');
-
-        const ids = [...document.querySelectorAll('input[name="participant"]:checked')].map(el => el.value);
-
-        const res = await jsonp('createMeeting', {
-          title: title,
-          participantIds: ids.join(',')
-        });
-
-        if (!res.ok) {
-          alert(res.error || '会議作成失敗');
-          return;
-        }
-
-        currentMeetingId = res.meetingId;
-        document.getElementById('meetingInfo').textContent = 'meetingId: ' + currentMeetingId;
-        setStatus('会議を作成しました');
-      } catch (err) {
-        setStatus('会議作成エラー: ' + (err.message || err));
-      }
-    });
-
-    document.getElementById('startMeetingRec').addEventListener('click', async () => {
-      try {
-        if (!currentMeetingId) return alert('先に会議を作成してください');
-
-        meetingBlob = null;
-        meetingChunks = [];
-        meetingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        meetingRecorder = new MediaRecorder(meetingStream);
-
-        meetingRecorder.ondataavailable = (event) => {
-          if (event.data && event.data.size > 0) {
-            meetingChunks.push(event.data);
-          }
-        };
-
-        meetingRecorder.onstop = () => {
-          meetingBlob = new Blob(meetingChunks, { type: meetingRecorder.mimeType || 'audio/webm' });
-          stopTracks(meetingStream);
-          meetingStream = null;
-          setStatus('会議録音を保存しました');
-        };
-
-        meetingRecorder.start();
-        setStatus('会議録音中');
-      } catch (err) {
-        setStatus('会議録音開始エラー: ' + (err.message || err));
-      }
-    });
-
-    document.getElementById('stopMeetingRec').addEventListener('click', async () => {
-      try {
-        if (!meetingRecorder) {
-          setStatus('先に会議録音開始を押してください');
-          return;
-        }
-        if (meetingRecorder.state !== 'inactive') {
-          meetingRecorder.stop();
-        }
-      } catch (err) {
-        setStatus('会議録音停止エラー: ' + (err.message || err));
-      }
-    });
-
-    document.getElementById('uploadMeeting').addEventListener('click', async () => {
-      try {
-        if (!currentMeetingId) return alert('先に会議を作成してください');
-        if (!meetingBlob) return alert('先に会議を録音してください');
-
-        setStatus('会議音声アップロード中...');
-        const audioBase64 = await blobToBase64(meetingBlob);
-
-        await postNoCors({
-          action: 'uploadMeetingAudio',
-          meetingId: currentMeetingId,
-          audioBase64: audioBase64,
-          mimeType: meetingBlob.type || 'audio/webm'
-        });
-
-        setStatus('会議音声の送信を開始しました');
-      } catch (err) {
-        setStatus('アップロードエラー: ' + (err.message || err));
-      }
-    });
-
-    document.getElementById('processMeeting').addEventListener('click', async () => {
-      try {
-        if (!currentMeetingId) return alert('先に会議を作成してください');
-
-        setStatus('議事録生成中... 数分かかることがあります');
-        const res = await jsonp('processMeeting', {
-          meetingId: currentMeetingId
-        });
-
-        if (!res.ok) {
-          alert(res.error || '処理失敗');
-          return;
-        }
-
-        document.getElementById('result').textContent = JSON.stringify(res.minutes, null, 2);
-        setStatus('議事録生成が完了しました');
-      } catch (err) {
-        setStatus('議事録生成エラー: ' + (err.message || err));
-      }
-    });
-
-    async function refreshParticipants() {
-      const res = await jsonp('listParticipants', {});
-      const box = document.getElementById('participants');
-      box.innerHTML = '';
-
-      (res.participants || []).forEach(p => {
-        const label = document.createElement('label');
-        label.className = 'chk';
-        label.innerHTML =
-          '<input type="checkbox" name="participant" value="' + escapeHtml(p.participant_id) + '">' +
-          '<span>' + escapeHtml(p.display_name || p.name) + '</span>';
-        box.appendChild(label);
-      });
+      sampleRecorder.start();
+      setSampleRecordingUi(true);
+      setStatus('声サンプル録音中');
+    } catch (err) {
+      setSampleRecordingUi(false);
+      setStatus('声サンプル録音開始エラー: ' + (err.message || err));
     }
+  });
 
-    function jsonp(action, params) {
-      return new Promise((resolve, reject) => {
-        const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
-        const script = document.createElement('script');
-        const url = new URL(GAS_URL);
+  document.getElementById('stopSample').addEventListener('click', async () => {
+    try {
+      if (!sampleRecorder) {
+        setStatus('先に声サンプル録音開始を押してください');
+        return;
+      }
+      if (sampleRecorder.state !== 'inactive') {
+        sampleRecorder.stop();
+      }
+    } catch (err) {
+      setSampleRecordingUi(false);
+      setStatus('声サンプル停止エラー: ' + (err.message || err));
+    }
+  });
 
-        url.searchParams.set('api', '1');
-        url.searchParams.set('action', action);
-        url.searchParams.set('callback', callbackName);
+  document.getElementById('registerParticipant').addEventListener('click', async () => {
+    try {
+      const name = els.pName.value.trim();
+      if (!name) return alert('名前を入力してください');
+      if (!sampleBlob) return alert('先に声サンプルを録音してください');
 
-        Object.keys(params || {}).forEach(key => {
-          url.searchParams.set(key, params[key]);
-        });
+      setStatus('参加者登録中...');
+      const sampleBase64 = await blobToBase64(sampleBlob);
 
-        let done = false;
+      await postNoCors({
+        action: 'registerParticipant',
+        name: name,
+        displayName: name,
+        sampleBase64: sampleBase64,
+        mimeType: sampleBlob.type || 'audio/webm'
+      });
 
-        window[callbackName] = (data) => {
-          done = true;
-          resolve(data);
+      setStatus('参加者登録を送信しました');
+      els.pName.value = '';
+      sampleBlob = null;
+
+      setTimeout(async () => {
+        await refreshParticipants();
+        setStatus('参加者一覧を更新しました');
+      }, 1500);
+    } catch (err) {
+      setStatus('参加者登録エラー: ' + (err.message || err));
+    }
+  });
+
+  document.getElementById('createMeeting').addEventListener('click', async () => {
+    try {
+      const title = els.meetingTitle.value.trim();
+      if (!title) return alert('会議名を入力してください');
+
+      const ids = [...document.querySelectorAll('input[name="participant"]:checked')].map(el => el.value);
+
+      const res = await jsonp('createMeeting', {
+        title: title,
+        participantIds: ids.join(',')
+      });
+
+      if (!res.ok) {
+        alert(res.error || '会議作成失敗');
+        return;
+      }
+
+      currentMeetingId = res.meetingId;
+      els.meetingInfo.textContent = 'meetingId: ' + currentMeetingId;
+      setStatus('会議を作成しました');
+    } catch (err) {
+      setStatus('会議作成エラー: ' + (err.message || err));
+    }
+  });
+
+  document.getElementById('startMeetingRec').addEventListener('click', async () => {
+    try {
+      if (!currentMeetingId) return alert('先に会議を作成してください');
+
+      meetingBlob = null;
+      meetingChunks = [];
+      meetingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      meetingRecorder = new MediaRecorder(meetingStream);
+
+      meetingRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          meetingChunks.push(event.data);
+        }
+      };
+
+      meetingRecorder.onstop = () => {
+        meetingBlob = new Blob(meetingChunks, { type: meetingRecorder.mimeType || 'audio/webm' });
+        stopTracks(meetingStream);
+        meetingStream = null;
+        setMeetingRecordingUi(false);
+        setStatus('会議録音を保存しました');
+      };
+
+      meetingRecorder.start();
+      setMeetingRecordingUi(true);
+      setStatus('会議録音中');
+    } catch (err) {
+      setMeetingRecordingUi(false);
+      setStatus('会議録音開始エラー: ' + (err.message || err));
+    }
+  });
+
+  document.getElementById('stopMeetingRec').addEventListener('click', async () => {
+    try {
+      if (!meetingRecorder) {
+        setStatus('先に会議録音開始を押してください');
+        return;
+      }
+      if (meetingRecorder.state !== 'inactive') {
+        meetingRecorder.stop();
+      }
+    } catch (err) {
+      setMeetingRecordingUi(false);
+      setStatus('会議録音停止エラー: ' + (err.message || err));
+    }
+  });
+
+  document.getElementById('uploadMeeting').addEventListener('click', async () => {
+    try {
+      if (!currentMeetingId) return alert('先に会議を作成してください');
+      if (!meetingBlob) return alert('先に会議を録音してください');
+
+      setStatus('会議音声アップロード中...');
+      const audioBase64 = await blobToBase64(meetingBlob);
+
+      await postNoCors({
+        action: 'uploadMeetingAudio',
+        meetingId: currentMeetingId,
+        audioBase64: audioBase64,
+        mimeType: meetingBlob.type || 'audio/webm'
+      });
+
+      setStatus('会議音声の送信を開始しました');
+    } catch (err) {
+      setStatus('アップロードエラー: ' + (err.message || err));
+    }
+  });
+
+  document.getElementById('processMeeting').addEventListener('click', async () => {
+    try {
+      if (!currentMeetingId) return alert('先に会議を作成してください');
+
+      setStatus('議事録生成中... 数分かかることがあります');
+      const res = await jsonp('processMeeting', {
+        meetingId: currentMeetingId
+      });
+
+      if (!res.ok) {
+        alert(res.error || '処理失敗');
+        return;
+      }
+
+      els.result.textContent = JSON.stringify(res.minutes, null, 2);
+      setStatus('議事録生成が完了しました');
+    } catch (err) {
+      setStatus('議事録生成エラー: ' + (err.message || err));
+    }
+  });
+
+  async function refreshParticipants() {
+    const res = await jsonp('listParticipants', {});
+    const box = els.participants;
+    box.innerHTML = '';
+
+    (res.participants || []).forEach(p => {
+      const label = document.createElement('label');
+      label.className = 'chk';
+      label.innerHTML =
+        '<input type="checkbox" name="participant" value="' + escapeHtml(p.participant_id) + '">' +
+        '<span>' + escapeHtml(p.display_name || p.name) + '</span>';
+      box.appendChild(label);
+    });
+  }
+
+  function jsonp(action, params) {
+    return new Promise((resolve, reject) => {
+      const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+      const script = document.createElement('script');
+      const url = new URL(GAS_URL);
+
+      url.searchParams.set('api', '1');
+      url.searchParams.set('action', action);
+      url.searchParams.set('callback', callbackName);
+
+      Object.keys(params || {}).forEach(key => {
+        url.searchParams.set(key, params[key]);
+      });
+
+      let done = false;
+
+      window[callbackName] = (data) => {
+        done = true;
+        resolve(data);
+        cleanup();
+      };
+
+      script.onerror = () => {
+        reject(new Error('JSONP通信に失敗しました'));
+        cleanup();
+      };
+
+      function cleanup() {
+        if (window[callbackName]) delete window[callbackName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      document.body.appendChild(script);
+      script.src = url.toString();
+
+      setTimeout(() => {
+        if (!done) {
+          reject(new Error('JSONP通信がタイムアウトしました'));
           cleanup();
-        };
-
-        script.onerror = () => {
-          reject(new Error('JSONP通信に失敗しました'));
-          cleanup();
-        };
-
-        function cleanup() {
-          if (window[callbackName]) delete window[callbackName];
-          if (script.parentNode) script.parentNode.removeChild(script);
         }
+      }, 120000);
+    });
+  }
 
-        document.body.appendChild(script);
-        script.src = url.toString();
+  async function postNoCors(body) {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify(body)
+    });
+  }
 
-        setTimeout(() => {
-          if (!done) {
-            reject(new Error('JSONP通信がタイムアウトしました'));
-            cleanup();
-          }
-        }, 120000);
-      });
-    }
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result;
+        resolve(String(dataUrl).split(',')[1]);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
 
-    async function postNoCors(body) {
-      await fetch(GAS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify(body)
-      });
-    }
+  function stopTracks(stream) {
+    if (!stream) return;
+    stream.getTracks().forEach(track => track.stop());
+  }
 
-    function blobToBase64(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const dataUrl = reader.result;
-          resolve(String(dataUrl).split(',')[1]);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    }
+  function setStatus(msg) {
+    els.status.textContent = msg;
+  }
 
-    function stopTracks(stream) {
-      if (!stream) return;
-      stream.getTracks().forEach(track => track.stop());
-    }
-
-    function setStatus(msg) {
-      document.getElementById('status').textContent = msg;
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-    }
-  </script>
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+</script>
 </body>
 </html>
