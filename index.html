@@ -23,6 +23,7 @@
       --text-dim: #9090a8;
       --success: #34d399;
       --danger: #f87171;
+      --warn: #fbbf24;
       --font: 'Noto Sans JP', sans-serif;
       --mono: 'DM Mono', monospace;
       --radius: 16px;
@@ -115,6 +116,7 @@
     .step:nth-child(4) { animation-delay: 0.20s; }
     .step:nth-child(5) { animation-delay: 0.25s; }
     .step:nth-child(6) { animation-delay: 0.30s; }
+    .step:nth-child(7) { animation-delay: 0.35s; }
 
     .step-header {
       display: flex;
@@ -134,9 +136,11 @@
       font-family: var(--mono);
       flex-shrink: 0;
     }
-    .step-title {
-      font-size: 15px;
-      font-weight: 500;
+    .step-title { font-size: 15px; font-weight: 500; }
+    .step-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
     }
 
     /* inputs */
@@ -210,6 +214,18 @@
       border: 1px solid rgba(52,211,153,0.25);
     }
     .btn-success:hover:not(:disabled) { background: rgba(52,211,153,0.2); }
+    .btn-warn {
+      background: rgba(251,191,36,0.12);
+      color: var(--warn);
+      border: 1px solid rgba(251,191,36,0.25);
+    }
+    .btn-warn:hover:not(:disabled) { background: rgba(251,191,36,0.2); }
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 12px;
+      width: auto;
+      border-radius: 8px;
+    }
 
     .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .spacer { height: 12px; }
@@ -261,6 +277,64 @@
       padding: 5px 10px;
     }
     .meeting-tag span { color: var(--accent2); }
+
+    /* ── speaker mapping UI ── */
+    .speaker-map-list { display: flex; flex-direction: column; gap: 8px; }
+    .speaker-map-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .speaker-label-badge {
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      color: var(--accent2);
+      background: rgba(124,107,255,0.15);
+      border: 1px solid rgba(124,107,255,0.25);
+      border-radius: 6px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .speaker-arrow {
+      color: var(--text-muted);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .speaker-name-input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 14px;
+      font-family: var(--font);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      min-width: 0;
+    }
+    .speaker-name-input:focus {
+      border-color: var(--accent);
+      background: rgba(124,107,255,0.08);
+    }
+    .speaker-name-input::placeholder { color: var(--text-muted); }
+    .apply-banner {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--warn);
+      display: none;
+    }
+    .apply-banner.visible { display: block; }
 
     /* transcripts */
     .transcript-list { display: flex; flex-direction: column; gap: 8px; }
@@ -344,6 +418,7 @@
       <p class="header-sub">録音・文字起こし・議事録生成を自動化</p>
     </div>
 
+    <!-- 01 参加者登録 -->
     <div class="step">
       <div class="step-header">
         <div class="step-num">01</div>
@@ -359,6 +434,7 @@
       <button class="btn btn-primary" id="registerParticipant">参加者を登録</button>
     </div>
 
+    <!-- 02 会議作成 -->
     <div class="step">
       <div class="step-header">
         <div class="step-num">02</div>
@@ -372,6 +448,7 @@
       <div id="meetingInfo"></div>
     </div>
 
+    <!-- 03 録音 -->
     <div class="step">
       <div class="step-header">
         <div class="step-num">03</div>
@@ -387,6 +464,7 @@
       <button class="btn btn-primary" id="processMeeting">議事録を生成</button>
     </div>
 
+    <!-- 04 ステータス -->
     <div class="step">
       <div class="step-header">
         <div class="step-num">04</div>
@@ -395,17 +473,32 @@
       <div id="status" class="status-box">初期化中...</div>
     </div>
 
-    <div class="step">
+    <!-- 05 話者名の修正 -->
+    <div class="step" id="speakerMapStep" style="display:none;">
       <div class="step-header">
         <div class="step-num">05</div>
+        <div class="step-title">話者名の修正</div>
+        <div class="step-subtitle">名前を編集して適用</div>
+      </div>
+      <div id="speakerMapList" class="speaker-map-list"></div>
+      <div class="apply-banner" id="applyBanner">名前を変更したら「適用」を押してください</div>
+      <div class="spacer"></div>
+      <button class="btn btn-warn" id="applySpeakerMap">修正を発言ログ・議事録に適用</button>
+    </div>
+
+    <!-- 06 発言ログ -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">06</div>
         <div class="step-title">発言ログ</div>
       </div>
       <div id="transcripts"><p class="empty-state">議事録生成後に表示されます</p></div>
     </div>
 
+    <!-- 07 議事録 -->
     <div class="step">
       <div class="step-header">
-        <div class="step-num">06</div>
+        <div class="step-num">07</div>
         <div class="step-title">議事録結果</div>
       </div>
       <div id="result"><p class="empty-state">議事録生成後に表示されます</p></div>
@@ -418,6 +511,12 @@
   let sampleRecorder=null,sampleChunks=[],sampleBlob=null,sampleStream=null;
   let meetingRecorder=null,meetingChunks=[],meetingBlob=null,meetingStream=null;
   let currentMeetingId=null;
+
+  // 生データを保持（話者名修正のために使う）
+  let rawSegments=[];
+  let rawMinutes={};
+  // label → 表示名のマップ
+  let speakerMap={};
 
   const els={
     startSample:document.getElementById('startSample'),
@@ -435,6 +534,10 @@
     meetingInfo:document.getElementById('meetingInfo'),
     participants:document.getElementById('participants'),
     transcripts:document.getElementById('transcripts'),
+    speakerMapStep:document.getElementById('speakerMapStep'),
+    speakerMapList:document.getElementById('speakerMapList'),
+    applyBanner:document.getElementById('applyBanner'),
+    applySpeakerMap:document.getElementById('applySpeakerMap'),
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -442,6 +545,7 @@
     setStatus('準備完了');
   });
 
+  /* ── sample recording ── */
   els.startSample.addEventListener('click', async () => {
     try {
       sampleBlob=null; sampleChunks=[];
@@ -466,6 +570,7 @@
     if(sampleRecorder&&sampleRecorder.state!=='inactive') sampleRecorder.stop();
   });
 
+  /* ── register ── */
   els.registerParticipant.addEventListener('click', async () => {
     const name=els.pName.value.trim();
     if(!name) return alert('名前を入力してください');
@@ -478,6 +583,7 @@
     setTimeout(async()=>{await refreshParticipants(); setStatus('参加者一覧を更新しました');},1500);
   });
 
+  /* ── create meeting ── */
   els.createMeeting.addEventListener('click', async () => {
     const title=els.meetingTitle.value.trim();
     if(!title) return alert('会議名を入力してください');
@@ -488,9 +594,12 @@
     els.meetingInfo.innerHTML='<div class="meeting-tag">ID <span>'+escapeHtml(currentMeetingId)+'</span></div>';
     els.transcripts.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
     els.result.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
+    els.speakerMapStep.style.display='none';
+    rawSegments=[]; rawMinutes={}; speakerMap={};
     setStatus('会議を作成しました');
   });
 
+  /* ── meeting recording ── */
   els.startMeetingRec.addEventListener('click', async () => {
     if(!currentMeetingId) return alert('先に会議を作成してください');
     meetingBlob=null; meetingChunks=[];
@@ -514,6 +623,7 @@
     if(meetingRecorder&&meetingRecorder.state!=='inactive') meetingRecorder.stop();
   });
 
+  /* ── upload ── */
   els.uploadMeeting.addEventListener('click', async () => {
     if(!currentMeetingId) return alert('先に会議を作成してください');
     if(!meetingBlob) return alert('先に会議を録音してください');
@@ -523,36 +633,120 @@
     setStatus('音声の送信を開始しました');
   });
 
+  /* ── process ── */
   els.processMeeting.addEventListener('click', async () => {
     if(!currentMeetingId) return alert('先に会議を作成してください');
     setStatus('議事録生成中...\n文字起こしに数分かかることがあります');
     const res=await jsonp('processMeeting',{meetingId:currentMeetingId});
     if(!res.ok) return alert(res.error||'処理失敗');
 
-    const segments=res.segments||[];
-    if(segments.length===0){
-      els.transcripts.innerHTML='<p class="empty-state">発言ログなし</p>';
-    } else {
-      els.transcripts.innerHTML='<div class="transcript-list"></div>';
-      const list=els.transcripts.querySelector('.transcript-list');
-      segments.forEach(s=>{
-        const name=s.speaker_name||s.speaker_label||'不明';
-        const sec=(s.start_sec!==''&&s.start_sec!==null)?Math.floor(Number(s.start_sec)):null;
-        const timeStr=sec!==null?formatTime(sec):'';
-        const div=document.createElement('div');
-        div.className='transcript-item';
-        div.innerHTML=
-          '<div class="transcript-time">'+escapeHtml(timeStr)+'</div>'+
-          '<div class="transcript-body">'+
-            '<div class="transcript-speaker">'+escapeHtml(name)+'</div>'+
-            '<div class="transcript-text">'+escapeHtml(s.text||'')+'</div>'+
-          '</div>';
-        list.appendChild(div);
-      });
-    }
+    rawSegments=res.segments||[];
+    rawMinutes=res.minutes||{};
 
-    const m=res.minutes||{};
+    // 話者ラベルを収集してマップ初期化
+    speakerMap={};
+    rawSegments.forEach(s=>{
+      const label=s.speaker_label||'';
+      if(label && !(label in speakerMap)){
+        // GASがすでに名前を当てていればそれをデフォルトに
+        speakerMap[label]=s.speaker_name||label;
+      }
+    });
+
+    // 話者修正UIを表示
+    buildSpeakerMapUI();
+    els.speakerMapStep.style.display='block';
+
+    // 発言ログ・議事録を描画
+    renderTranscripts();
+    renderMinutes();
+
+    setStatus('議事録生成が完了しました ✓\n話者名がズレていたら「話者名の修正」で編集してください');
+  });
+
+  /* ── speaker map UI ── */
+  function buildSpeakerMapUI(){
+    els.speakerMapList.innerHTML='';
+    els.applyBanner.classList.remove('visible');
+    Object.keys(speakerMap).forEach(label=>{
+      const row=document.createElement('div');
+      row.className='speaker-map-row';
+      const badge=document.createElement('div');
+      badge.className='speaker-label-badge';
+      badge.textContent=label;
+      const arrow=document.createElement('div');
+      arrow.className='speaker-arrow';
+      arrow.textContent='→';
+      const inp=document.createElement('input');
+      inp.type='text';
+      inp.className='speaker-name-input';
+      inp.value=speakerMap[label];
+      inp.placeholder='名前を入力';
+      inp.dataset.label=label;
+      inp.addEventListener('input',()=>{
+        els.applyBanner.classList.add('visible');
+      });
+      row.appendChild(badge);
+      row.appendChild(arrow);
+      row.appendChild(inp);
+      els.speakerMapList.appendChild(row);
+    });
+  }
+
+  /* ── apply speaker map ── */
+  els.applySpeakerMap.addEventListener('click',()=>{
+    // inputから最新の名前を取得
+    document.querySelectorAll('.speaker-name-input').forEach(inp=>{
+      const label=inp.dataset.label;
+      const name=inp.value.trim()||label;
+      speakerMap[label]=name;
+    });
+    els.applyBanner.classList.remove('visible');
+    renderTranscripts();
+    renderMinutes();
+    setStatus('話者名を更新しました ✓');
+  });
+
+  /* ── render transcripts ── */
+  function renderTranscripts(){
+    if(rawSegments.length===0){
+      els.transcripts.innerHTML='<p class="empty-state">発言ログなし</p>';
+      return;
+    }
+    els.transcripts.innerHTML='<div class="transcript-list"></div>';
+    const list=els.transcripts.querySelector('.transcript-list');
+    rawSegments.forEach(s=>{
+      const label=s.speaker_label||'';
+      const name=speakerMap[label]||s.speaker_name||label||'不明';
+      const sec=(s.start_sec!==''&&s.start_sec!==null)?Math.floor(Number(s.start_sec)):null;
+      const timeStr=sec!==null?formatTime(sec):'';
+      const div=document.createElement('div');
+      div.className='transcript-item';
+      div.innerHTML=
+        '<div class="transcript-time">'+escapeHtml(timeStr)+'</div>'+
+        '<div class="transcript-body">'+
+          '<div class="transcript-speaker">'+escapeHtml(name)+'</div>'+
+          '<div class="transcript-text">'+escapeHtml(s.text||'')+'</div>'+
+        '</div>';
+      list.appendChild(div);
+    });
+  }
+
+  /* ── render minutes ── */
+  function renderMinutes(){
+    const m=rawMinutes;
     els.result.innerHTML='';
+
+    // 議事録テキスト内の話者名も置換
+    const replaceSpeakers=(text)=>{
+      if(typeof text!=='string') return text;
+      let t=text;
+      Object.keys(speakerMap).forEach(label=>{
+        t=t.replaceAll(label, speakerMap[label]);
+      });
+      return t;
+    };
+
     const sections=[
       {key:'summary',label:'サマリー',type:'text'},
       {key:'decisions',label:'決定事項',type:'list'},
@@ -572,13 +766,15 @@
       const body=document.createElement('div');
       body.className='minutes-section-body';
       if(sec.type==='text'){
-        body.textContent=val;
+        body.textContent=replaceSpeakers(val);
       } else {
         (Array.isArray(val)?val:[]).forEach(item=>{
           const row=document.createElement('div');
           row.className='minutes-list-item';
-          const text=typeof item==='object'?JSON.stringify(item,null,0).replace(/[{}"]/g,'').replace(/,/g,' / '):String(item);
-          row.appendChild(document.createTextNode(text));
+          const text=typeof item==='object'
+            ?JSON.stringify(item,null,0).replace(/[{}"]/g,'').replace(/,/g,' / ')
+            :String(item);
+          row.appendChild(document.createTextNode(replaceSpeakers(text)));
           body.appendChild(row);
         });
       }
@@ -590,9 +786,9 @@
     } else {
       els.result.appendChild(block);
     }
-    setStatus('議事録生成が完了しました ✓');
-  });
+  }
 
+  /* ── helpers ── */
   async function refreshParticipants(){
     const res=await jsonp('listParticipants',{});
     els.participants.innerHTML='';
