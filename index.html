@@ -45,7 +45,6 @@
       padding: 40px 20px 80px;
     }
 
-    /* header */
     .header {
       margin-bottom: 48px;
       padding-bottom: 32px;
@@ -75,8 +74,7 @@
       animation: pulse 2s ease-in-out infinite;
     }
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      0%,100%{opacity:1} 50%{opacity:0.3}
     }
     h1 {
       font-size: clamp(28px, 6vw, 42px);
@@ -95,7 +93,6 @@
       font-weight: 300;
     }
 
-    /* step cards */
     .step {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -107,16 +104,16 @@
     }
     .step:hover { border-color: var(--border-active); }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from{opacity:0;transform:translateY(12px)}
+      to{opacity:1;transform:translateY(0)}
     }
-    .step:nth-child(1) { animation-delay: 0.05s; }
-    .step:nth-child(2) { animation-delay: 0.10s; }
-    .step:nth-child(3) { animation-delay: 0.15s; }
-    .step:nth-child(4) { animation-delay: 0.20s; }
-    .step:nth-child(5) { animation-delay: 0.25s; }
-    .step:nth-child(6) { animation-delay: 0.30s; }
-    .step:nth-child(7) { animation-delay: 0.35s; }
+    .step:nth-child(1){animation-delay:0.05s}
+    .step:nth-child(2){animation-delay:0.10s}
+    .step:nth-child(3){animation-delay:0.15s}
+    .step:nth-child(4){animation-delay:0.20s}
+    .step:nth-child(5){animation-delay:0.25s}
+    .step:nth-child(6){animation-delay:0.30s}
+    .step:nth-child(7){animation-delay:0.35s}
 
     .step-header {
       display: flex;
@@ -130,20 +127,14 @@
       background: rgba(124,107,255,0.15);
       border: 1px solid rgba(124,107,255,0.3);
       display: flex; align-items: center; justify-content: center;
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 12px; font-weight: 500;
       color: var(--accent2);
       font-family: var(--mono);
       flex-shrink: 0;
     }
     .step-title { font-size: 15px; font-weight: 500; }
-    .step-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-left: auto;
-    }
+    .step-subtitle { font-size: 12px; color: var(--text-muted); margin-left: auto; }
 
-    /* inputs */
     input[type="text"] {
       width: 100%;
       background: var(--surface2);
@@ -162,686 +153,676 @@
     }
     input::placeholder { color: var(--text-muted); }
 
-    /* buttons */
     .btn {
       width: 100%;
       padding: 13px 20px;
       border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 14px; font-weight: 500;
       font-family: var(--font);
       cursor: pointer;
-      border: none;
-      outline: none;
+      border: none; outline: none;
       transition: all 0.15s;
-      letter-spacing: 0.01em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       gap: 6px;
     }
-    .btn:active:not(:disabled) { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn:active:not(:disabled){transform:scale(0.98)}
+    .btn:disabled{opacity:0.35;cursor:not-allowed}
+    .btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 20px var(--accent-glow)}
+    .btn-primary:hover:not(:disabled){background:#8f7fff;box-shadow:0 4px 28px rgba(124,107,255,0.45)}
+    .btn-ghost{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+    .btn-ghost:hover:not(:disabled){background:#22222e;border-color:var(--border-active);color:var(--text)}
+    .btn-danger{background:rgba(248,113,113,0.1);color:var(--danger);border:1px solid rgba(248,113,113,0.25)}
+    .btn-danger:hover:not(:disabled){background:rgba(248,113,113,0.18)}
+    .btn-success{background:rgba(52,211,153,0.12);color:var(--success);border:1px solid rgba(52,211,153,0.25)}
+    .btn-success:hover:not(:disabled){background:rgba(52,211,153,0.2)}
+    .btn-warn{background:rgba(251,191,36,0.12);color:var(--warn);border:1px solid rgba(251,191,36,0.25)}
+    .btn-warn:hover:not(:disabled){background:rgba(251,191,36,0.2)}
 
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 20px var(--accent-glow);
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .spacer{height:12px}
+
+    .participant-list{display:flex;flex-direction:column;gap:4px}
+    .chk-label{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 14px;border-radius:var(--radius-sm);
+      border:1px solid var(--border);background:var(--surface2);
+      cursor:pointer;transition:border-color 0.15s;
+      font-size:14px;color:var(--text-dim);
     }
-    .btn-primary:hover:not(:disabled) {
-      background: #8f7fff;
-      box-shadow: 0 4px 28px rgba(124,107,255,0.45);
-    }
-    .btn-ghost {
-      background: var(--surface2);
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover:not(:disabled) {
-      background: #22222e;
-      border-color: var(--border-active);
-      color: var(--text);
-    }
-    .btn-danger {
-      background: rgba(248,113,113,0.1);
-      color: var(--danger);
-      border: 1px solid rgba(248,113,113,0.25);
-    }
-    .btn-danger:hover:not(:disabled) { background: rgba(248,113,113,0.18); }
-    .btn-success {
-      background: rgba(52,211,153,0.12);
-      color: var(--success);
-      border: 1px solid rgba(52,211,153,0.25);
-    }
-    .btn-success:hover:not(:disabled) { background: rgba(52,211,153,0.2); }
-    .btn-warn {
-      background: rgba(251,191,36,0.12);
-      color: var(--warn);
-      border: 1px solid rgba(251,191,36,0.25);
-    }
-    .btn-warn:hover:not(:disabled) { background: rgba(251,191,36,0.2); }
-    .btn-sm {
-      padding: 7px 14px;
-      font-size: 12px;
-      width: auto;
-      border-radius: 8px;
+    .chk-label:hover{border-color:var(--border-active);color:var(--text)}
+    .chk-label input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0}
+
+    .status-box{
+      background:var(--surface2);border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:14px 16px;
+      font-size:13px;font-family:var(--mono);color:var(--text-dim);
+      min-height:48px;white-space:pre-wrap;line-height:1.6;
     }
 
-    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .spacer { height: 12px; }
-
-    /* participants */
-    .participant-list { display: flex; flex-direction: column; gap: 4px; }
-    .chk-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      cursor: pointer;
-      transition: border-color 0.15s;
-      font-size: 14px;
-      color: var(--text-dim);
-    }
-    .chk-label:hover { border-color: var(--border-active); color: var(--text); }
-    .chk-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
-
-    /* status */
-    .status-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      font-size: 13px;
-      font-family: var(--mono);
-      color: var(--text-dim);
-      min-height: 48px;
-      white-space: pre-wrap;
-      line-height: 1.6;
-    }
-
-    /* meeting tag */
-    .meeting-tag {
+    /* ── upload progress ── */
+    .upload-status{
       margin-top: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 5px 10px;
-    }
-    .meeting-tag span { color: var(--accent2); }
-
-    /* ── speaker mapping UI ── */
-    .speaker-map-list { display: flex; flex-direction: column; gap: 8px; }
-    .speaker-map-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       padding: 12px 14px;
-      background: var(--surface2);
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-    }
-    .speaker-label-badge {
-      font-size: 12px;
-      font-family: var(--mono);
-      font-weight: 500;
-      color: var(--accent2);
-      background: rgba(124,107,255,0.15);
-      border: 1px solid rgba(124,107,255,0.25);
-      border-radius: 6px;
-      padding: 3px 10px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .speaker-arrow {
-      color: var(--text-muted);
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-    .speaker-name-input {
-      flex: 1;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 14px;
-      font-family: var(--font);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.15s, background 0.15s;
-      min-width: 0;
-    }
-    .speaker-name-input:focus {
-      border-color: var(--accent);
-      background: rgba(124,107,255,0.08);
-    }
-    .speaker-name-input::placeholder { color: var(--text-muted); }
-    .apply-banner {
-      margin-top: 12px;
-      padding: 10px 14px;
-      background: rgba(251,191,36,0.08);
-      border: 1px solid rgba(251,191,36,0.2);
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      color: var(--warn);
+      background: var(--surface2);
+      font-size: 13px;
       display: none;
     }
-    .apply-banner.visible { display: block; }
-
-    /* transcripts */
-    .transcript-list { display: flex; flex-direction: column; gap: 8px; }
-    .transcript-item {
+    .upload-status.visible{ display: block; }
+    .upload-status-row{
       display: flex;
-      gap: 12px;
-      padding: 12px 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      align-items: center;
+      gap: 10px;
     }
-    .transcript-time {
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      white-space: nowrap;
-      padding-top: 2px;
-      min-width: 36px;
-    }
-    .transcript-body { flex: 1; }
-    .transcript-speaker {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--accent2);
-      margin-bottom: 3px;
-      letter-spacing: 0.02em;
-    }
-    .transcript-text { font-size: 14px; color: var(--text-dim); line-height: 1.55; }
+    .upload-status-icon{ font-size: 16px; flex-shrink: 0; }
+    .upload-status-text{ color: var(--text-dim); flex: 1; }
+    .upload-status-text strong{ color: var(--text); }
 
-    /* minutes */
-    .minutes-block { display: flex; flex-direction: column; gap: 12px; }
-    .minutes-section {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+    /* progress bar */
+    .progress-bar-wrap{
+      margin-top: 10px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 100px;
       overflow: hidden;
     }
-    .minutes-section-head {
-      padding: 10px 14px;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
+    .progress-bar{
+      height: 100%;
+      border-radius: 100px;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.4s ease;
     }
-    .minutes-section-body { padding: 14px; font-size: 14px; color: var(--text-dim); line-height: 1.65; }
-    .minutes-list-item {
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
+    .progress-bar.indeterminate{
+      width: 40%;
+      animation: indeterminate 1.4s ease-in-out infinite;
     }
-    .minutes-list-item:last-child { border-bottom: none; }
-    .minutes-list-item::before { content: '–'; color: var(--accent); flex-shrink: 0; }
+    @keyframes indeterminate{
+      0%{transform:translateX(-100%)}
+      100%{transform:translateX(350%)}
+    }
 
-    .empty-state { text-align: center; color: var(--text-muted); font-size: 13px; padding: 24px 0; }
-
-    /* rec dot */
-    .rec-dot {
-      display: inline-block;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--danger);
-      animation: recPulse 1s ease-in-out infinite;
+    .meeting-tag{
+      margin-top:12px;display:inline-flex;align-items:center;gap:6px;
+      font-size:11px;font-family:var(--mono);color:var(--text-muted);
+      background:var(--surface2);border:1px solid var(--border);
+      border-radius:6px;padding:5px 10px;
     }
-    @keyframes recPulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(248,113,113,0.4); }
-      50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(248,113,113,0); }
+    .meeting-tag span{color:var(--accent2)}
+
+    /* speaker map */
+    .speaker-map-list{display:flex;flex-direction:column;gap:8px}
+    .speaker-map-row{
+      display:flex;align-items:center;gap:10px;
+      padding:12px 14px;background:var(--surface2);
+      border:1px solid var(--border);border-radius:var(--radius-sm);
+    }
+    .speaker-label-badge{
+      font-size:12px;font-family:var(--mono);font-weight:500;
+      color:var(--accent2);background:rgba(124,107,255,0.15);
+      border:1px solid rgba(124,107,255,0.25);border-radius:6px;
+      padding:3px 10px;white-space:nowrap;flex-shrink:0;
+    }
+    .speaker-arrow{color:var(--text-muted);font-size:14px;flex-shrink:0}
+    .speaker-name-input{
+      flex:1;background:transparent;border:1px solid transparent;
+      border-radius:8px;padding:6px 10px;
+      font-size:14px;font-family:var(--font);color:var(--text);
+      outline:none;transition:border-color 0.15s,background 0.15s;min-width:0;
+    }
+    .speaker-name-input:focus{border-color:var(--accent);background:rgba(124,107,255,0.08)}
+    .speaker-name-input::placeholder{color:var(--text-muted)}
+    .apply-banner{
+      margin-top:12px;padding:10px 14px;
+      background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);
+      border-radius:var(--radius-sm);font-size:12px;color:var(--warn);display:none;
+    }
+    .apply-banner.visible{display:block}
+
+    .transcript-list{display:flex;flex-direction:column;gap:8px}
+    .transcript-item{
+      display:flex;gap:12px;padding:12px 14px;
+      background:var(--surface2);border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+    }
+    .transcript-time{
+      font-size:11px;font-family:var(--mono);color:var(--text-muted);
+      white-space:nowrap;padding-top:2px;min-width:36px;
+    }
+    .transcript-body{flex:1}
+    .transcript-speaker{font-size:12px;font-weight:500;color:var(--accent2);margin-bottom:3px;letter-spacing:0.02em}
+    .transcript-text{font-size:14px;color:var(--text-dim);line-height:1.55}
+
+    .minutes-block{display:flex;flex-direction:column;gap:12px}
+    .minutes-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+    .minutes-section-head{
+      padding:10px 14px;font-size:11px;font-weight:500;
+      letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);
+      border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);
+    }
+    .minutes-section-body{padding:14px;font-size:14px;color:var(--text-dim);line-height:1.65}
+    .minutes-list-item{
+      padding:6px 0;border-bottom:1px solid var(--border);
+      display:flex;gap:8px;align-items:flex-start;
+    }
+    .minutes-list-item:last-child{border-bottom:none}
+    .minutes-list-item::before{content:'–';color:var(--accent);flex-shrink:0}
+
+    .empty-state{text-align:center;color:var(--text-muted);font-size:13px;padding:24px 0}
+
+    .rec-dot{
+      display:inline-block;width:8px;height:8px;border-radius:50%;
+      background:var(--danger);animation:recPulse 1s ease-in-out infinite;
+    }
+    @keyframes recPulse{
+      0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(248,113,113,0.4)}
+      50%{opacity:0.7;box-shadow:0 0 0 5px rgba(248,113,113,0)}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <div class="header">
-      <div class="header-badge">AI 議事録</div>
-      <h1>Meeting<br>Minutes</h1>
-      <p class="header-sub">録音・文字起こし・議事録生成を自動化</p>
-    </div>
-
-    <!-- 01 参加者登録 -->
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">01</div>
-        <div class="step-title">参加者登録</div>
-      </div>
-      <input id="p_name" type="text" placeholder="名前を入力">
-      <div class="spacer"></div>
-      <div class="btn-row">
-        <button class="btn btn-success" id="startSample">録音開始</button>
-        <button class="btn btn-ghost" id="stopSample" disabled>停止して保存</button>
-      </div>
-      <div class="spacer"></div>
-      <button class="btn btn-primary" id="registerParticipant">参加者を登録</button>
-    </div>
-
-    <!-- 02 会議作成 -->
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">02</div>
-        <div class="step-title">会議作成</div>
-      </div>
-      <input id="meeting_title" type="text" placeholder="会議名を入力">
-      <div class="spacer"></div>
-      <div id="participants" class="participant-list"></div>
-      <div class="spacer"></div>
-      <button class="btn btn-primary" id="createMeeting">会議を作成</button>
-      <div id="meetingInfo"></div>
-    </div>
-
-    <!-- 03 録音 -->
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">03</div>
-        <div class="step-title">会議録音</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-danger" id="startMeetingRec">録音開始</button>
-        <button class="btn btn-ghost" id="stopMeetingRec" disabled>録音停止</button>
-      </div>
-      <div class="spacer"></div>
-      <button class="btn btn-ghost" id="uploadMeeting">音声をアップロード</button>
-      <div class="spacer"></div>
-      <button class="btn btn-primary" id="processMeeting">議事録を生成</button>
-    </div>
-
-    <!-- 04 ステータス -->
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">04</div>
-        <div class="step-title">ステータス</div>
-      </div>
-      <div id="status" class="status-box">初期化中...</div>
-    </div>
-
-    <!-- 05 話者名の修正 -->
-    <div class="step" id="speakerMapStep" style="display:none;">
-      <div class="step-header">
-        <div class="step-num">05</div>
-        <div class="step-title">話者名の修正</div>
-        <div class="step-subtitle">名前を編集して適用</div>
-      </div>
-      <div id="speakerMapList" class="speaker-map-list"></div>
-      <div class="apply-banner" id="applyBanner">名前を変更したら「適用」を押してください</div>
-      <div class="spacer"></div>
-      <button class="btn btn-warn" id="applySpeakerMap">修正を発言ログ・議事録に適用</button>
-    </div>
-
-    <!-- 06 発言ログ -->
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">06</div>
-        <div class="step-title">発言ログ</div>
-      </div>
-      <div id="transcripts"><p class="empty-state">議事録生成後に表示されます</p></div>
-    </div>
-
-    <!-- 07 議事録 -->
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">07</div>
-        <div class="step-title">議事録結果</div>
-      </div>
-      <div id="result"><p class="empty-state">議事録生成後に表示されます</p></div>
-    </div>
-
+  <div class="header">
+    <div class="header-badge">AI 議事録</div>
+    <h1>Meeting<br>Minutes</h1>
+    <p class="header-sub">録音・文字起こし・議事録生成を自動化</p>
   </div>
-  <script>
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbz4ctET6SWq0dKJ69vTehPnqdo-2IFojwtNefLrKlIECcuvPgCxGVTMoxgLWZm5OzTt/exec';
 
-  let sampleRecorder=null,sampleChunks=[],sampleBlob=null,sampleStream=null;
-  let meetingRecorder=null,meetingChunks=[],meetingBlob=null,meetingStream=null;
-  let currentMeetingId=null;
+  <!-- 01 参加者登録 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">01</div>
+      <div class="step-title">参加者登録</div>
+    </div>
+    <input id="p_name" type="text" placeholder="名前を入力">
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn btn-success" id="startSample">録音開始</button>
+      <button class="btn btn-ghost" id="stopSample" disabled>停止して保存</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="registerParticipant">参加者を登録</button>
+  </div>
 
-  // 生データを保持（話者名修正のために使う）
-  let rawSegments=[];
-  let rawMinutes={};
-  // label → 表示名のマップ
-  let speakerMap={};
+  <!-- 02 会議作成 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">02</div>
+      <div class="step-title">会議作成</div>
+    </div>
+    <input id="meeting_title" type="text" placeholder="会議名を入力">
+    <div class="spacer"></div>
+    <div id="participants" class="participant-list"></div>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="createMeeting">会議を作成</button>
+    <div id="meetingInfo"></div>
+  </div>
 
-  const els={
-    startSample:document.getElementById('startSample'),
-    stopSample:document.getElementById('stopSample'),
-    registerParticipant:document.getElementById('registerParticipant'),
-    createMeeting:document.getElementById('createMeeting'),
-    startMeetingRec:document.getElementById('startMeetingRec'),
-    stopMeetingRec:document.getElementById('stopMeetingRec'),
-    uploadMeeting:document.getElementById('uploadMeeting'),
-    processMeeting:document.getElementById('processMeeting'),
-    status:document.getElementById('status'),
-    result:document.getElementById('result'),
-    pName:document.getElementById('p_name'),
-    meetingTitle:document.getElementById('meeting_title'),
-    meetingInfo:document.getElementById('meetingInfo'),
-    participants:document.getElementById('participants'),
-    transcripts:document.getElementById('transcripts'),
-    speakerMapStep:document.getElementById('speakerMapStep'),
-    speakerMapList:document.getElementById('speakerMapList'),
-    applyBanner:document.getElementById('applyBanner'),
-    applySpeakerMap:document.getElementById('applySpeakerMap'),
+  <!-- 03 録音・アップロード -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">03</div>
+      <div class="step-title">会議録音</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-danger" id="startMeetingRec">録音開始</button>
+      <button class="btn btn-ghost" id="stopMeetingRec" disabled>録音停止</button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" id="uploadMeeting">音声をアップロード</button>
+
+    <!-- アップロード状態表示 -->
+    <div class="upload-status" id="uploadStatus">
+      <div class="upload-status-row">
+        <div class="upload-status-icon" id="uploadIcon">⏳</div>
+        <div class="upload-status-text" id="uploadText">確認中...</div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar indeterminate" id="uploadProgress"></div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="processMeeting" disabled>議事録を生成</button>
+    <p style="margin-top:8px;font-size:12px;color:var(--text-muted);text-align:center;" id="processHint">
+      アップロード完了後に自動で有効になります
+    </p>
+  </div>
+
+  <!-- 04 ステータス -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">04</div>
+      <div class="step-title">ステータス</div>
+    </div>
+    <div id="status" class="status-box">初期化中...</div>
+  </div>
+
+  <!-- 05 話者名の修正 -->
+  <div class="step" id="speakerMapStep" style="display:none;">
+    <div class="step-header">
+      <div class="step-num">05</div>
+      <div class="step-title">話者名の修正</div>
+      <div class="step-subtitle">名前を編集して適用</div>
+    </div>
+    <div id="speakerMapList" class="speaker-map-list"></div>
+    <div class="apply-banner" id="applyBanner">名前を変更したら「適用」を押してください</div>
+    <div class="spacer"></div>
+    <button class="btn btn-warn" id="applySpeakerMap">修正を発言ログ・議事録に適用</button>
+  </div>
+
+  <!-- 06 発言ログ -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">06</div>
+      <div class="step-title">発言ログ</div>
+    </div>
+    <div id="transcripts"><p class="empty-state">議事録生成後に表示されます</p></div>
+  </div>
+
+  <!-- 07 議事録 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">07</div>
+      <div class="step-title">議事録結果</div>
+    </div>
+    <div id="result"><p class="empty-state">議事録生成後に表示されます</p></div>
+  </div>
+
+</div>
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz4ctET6SWq0dKJ69vTehPnqdo-2IFojwtNefLrKlIECcuvPgCxGVTMoxgLWZm5OzTt/exec';
+
+let sampleRecorder=null,sampleChunks=[],sampleBlob=null,sampleStream=null;
+let meetingRecorder=null,meetingChunks=[],meetingBlob=null,meetingStream=null;
+let currentMeetingId=null;
+let pollTimer=null;
+let rawSegments=[],rawMinutes={},speakerMap={};
+
+const els={
+  startSample:        document.getElementById('startSample'),
+  stopSample:         document.getElementById('stopSample'),
+  registerParticipant:document.getElementById('registerParticipant'),
+  createMeeting:      document.getElementById('createMeeting'),
+  startMeetingRec:    document.getElementById('startMeetingRec'),
+  stopMeetingRec:     document.getElementById('stopMeetingRec'),
+  uploadMeeting:      document.getElementById('uploadMeeting'),
+  processMeeting:     document.getElementById('processMeeting'),
+  processHint:        document.getElementById('processHint'),
+  status:             document.getElementById('status'),
+  result:             document.getElementById('result'),
+  pName:              document.getElementById('p_name'),
+  meetingTitle:       document.getElementById('meeting_title'),
+  meetingInfo:        document.getElementById('meetingInfo'),
+  participants:       document.getElementById('participants'),
+  transcripts:        document.getElementById('transcripts'),
+  uploadStatus:       document.getElementById('uploadStatus'),
+  uploadIcon:         document.getElementById('uploadIcon'),
+  uploadText:         document.getElementById('uploadText'),
+  uploadProgress:     document.getElementById('uploadProgress'),
+  speakerMapStep:     document.getElementById('speakerMapStep'),
+  speakerMapList:     document.getElementById('speakerMapList'),
+  applyBanner:        document.getElementById('applyBanner'),
+  applySpeakerMap:    document.getElementById('applySpeakerMap'),
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await refreshParticipants();
+  setStatus('準備完了');
+});
+
+/* ── sample recording ── */
+els.startSample.addEventListener('click', async () => {
+  try {
+    sampleBlob=null; sampleChunks=[];
+    sampleStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    sampleRecorder=new MediaRecorder(sampleStream);
+    sampleRecorder.ondataavailable=e=>{if(e.data?.size>0)sampleChunks.push(e.data);};
+    sampleRecorder.onstop=()=>{
+      sampleBlob=new Blob(sampleChunks,{type:sampleRecorder.mimeType||'audio/webm'});
+      stopTracks(sampleStream); sampleStream=null;
+      els.startSample.innerHTML='録音開始';
+      els.startSample.disabled=false; els.stopSample.disabled=true;
+      setStatus('声サンプルを保存しました');
+    };
+    sampleRecorder.start();
+    els.startSample.innerHTML='<span class="rec-dot"></span>録音中...';
+    els.startSample.disabled=true; els.stopSample.disabled=false;
+    setStatus('声サンプル録音中');
+  } catch(err){ els.startSample.disabled=false; setStatus('録音開始エラー: '+err.message); }
+});
+els.stopSample.addEventListener('click',()=>{
+  if(sampleRecorder&&sampleRecorder.state!=='inactive') sampleRecorder.stop();
+});
+
+/* ── register ── */
+els.registerParticipant.addEventListener('click', async () => {
+  const name=els.pName.value.trim();
+  if(!name) return alert('名前を入力してください');
+  if(!sampleBlob) return alert('先に声サンプルを録音してください');
+  setStatus('参加者登録中...');
+  const sampleBase64=await blobToBase64(sampleBlob);
+  await postNoCors({action:'registerParticipant',name,displayName:name,sampleBase64,mimeType:sampleBlob.type||'audio/webm'});
+  setStatus('参加者登録を送信しました');
+  els.pName.value=''; sampleBlob=null;
+  setTimeout(async()=>{await refreshParticipants(); setStatus('参加者一覧を更新しました');},1500);
+});
+
+/* ── create meeting ── */
+els.createMeeting.addEventListener('click', async () => {
+  const title=els.meetingTitle.value.trim();
+  if(!title) return alert('会議名を入力してください');
+  const ids=[...document.querySelectorAll('input[name="participant"]:checked')].map(el=>el.value);
+  const res=await jsonp('createMeeting',{title,participantIds:ids.join(',')});
+  if(!res.ok) return alert(res.error||'会議作成失敗');
+  currentMeetingId=res.meetingId;
+  els.meetingInfo.innerHTML='<div class="meeting-tag">ID <span>'+escapeHtml(currentMeetingId)+'</span></div>';
+  els.transcripts.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
+  els.result.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
+  els.speakerMapStep.style.display='none';
+  els.uploadStatus.classList.remove('visible');
+  setProcessBtn(false);
+  stopPoll();
+  rawSegments=[]; rawMinutes={}; speakerMap={};
+  setStatus('会議を作成しました');
+});
+
+/* ── meeting recording ── */
+els.startMeetingRec.addEventListener('click', async () => {
+  if(!currentMeetingId) return alert('先に会議を作成してください');
+  meetingBlob=null; meetingChunks=[];
+  meetingStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  meetingRecorder=new MediaRecorder(meetingStream);
+  meetingRecorder.ondataavailable=e=>{if(e.data?.size>0)meetingChunks.push(e.data);};
+  meetingRecorder.onstop=()=>{
+    meetingBlob=new Blob(meetingChunks,{type:meetingRecorder.mimeType||'audio/webm'});
+    stopTracks(meetingStream); meetingStream=null;
+    els.startMeetingRec.innerHTML='録音開始';
+    els.startMeetingRec.disabled=false; els.stopMeetingRec.disabled=true;
+    setStatus('会議録音を保存しました');
   };
+  meetingRecorder.start();
+  els.startMeetingRec.innerHTML='<span class="rec-dot"></span>録音中...';
+  els.startMeetingRec.disabled=true; els.stopMeetingRec.disabled=false;
+  setStatus('会議録音中');
+});
+els.stopMeetingRec.addEventListener('click',()=>{
+  if(meetingRecorder&&meetingRecorder.state!=='inactive') meetingRecorder.stop();
+});
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    await refreshParticipants();
-    setStatus('準備完了');
-  });
+/* ── upload ── */
+els.uploadMeeting.addEventListener('click', async () => {
+  if(!currentMeetingId) return alert('先に会議を作成してください');
+  if(!meetingBlob) return alert('先に会議を録音してください');
+  setStatus('音声アップロード中...\nGASへの送信を開始しました');
+  const audioBase64=await blobToBase64(meetingBlob);
+  await postNoCors({action:'uploadMeetingAudio',meetingId:currentMeetingId,audioBase64,mimeType:meetingBlob.type||'audio/webm'});
 
-  /* ── sample recording ── */
-  els.startSample.addEventListener('click', async () => {
+  // アップロード送信後すぐにポーリング開始
+  showUploadWaiting();
+  startPoll();
+});
+
+/* ── ポーリング：GASのステータスを定期確認 ── */
+function startPoll(){
+  stopPoll();
+  let attempts=0;
+  const maxAttempts=40; // 最大200秒
+
+  pollTimer=setInterval(async()=>{
+    attempts++;
     try {
-      sampleBlob=null; sampleChunks=[];
-      sampleStream=await navigator.mediaDevices.getUserMedia({audio:true});
-      sampleRecorder=new MediaRecorder(sampleStream);
-      sampleRecorder.ondataavailable=e=>{if(e.data?.size>0)sampleChunks.push(e.data);};
-      sampleRecorder.onstop=()=>{
-        sampleBlob=new Blob(sampleChunks,{type:sampleRecorder.mimeType||'audio/webm'});
-        stopTracks(sampleStream); sampleStream=null;
-        els.startSample.innerHTML='録音開始';
-        els.startSample.disabled=false; els.stopSample.disabled=true;
-        setStatus('声サンプルを保存しました');
-      };
-      sampleRecorder.start();
-      els.startSample.innerHTML='<span class="rec-dot"></span>録音中...';
-      els.startSample.disabled=true; els.stopSample.disabled=false;
-      setStatus('声サンプル録音中');
-    } catch(err){ els.startSample.disabled=false; setStatus('録音開始エラー: '+err.message); }
-  });
+      const res=await jsonp('getMeetingStatus',{meetingId:currentMeetingId});
+      if(!res.ok) return;
 
-  els.stopSample.addEventListener('click',()=>{
-    if(sampleRecorder&&sampleRecorder.state!=='inactive') sampleRecorder.stop();
-  });
+      const s=res.status;
 
-  /* ── register ── */
-  els.registerParticipant.addEventListener('click', async () => {
-    const name=els.pName.value.trim();
-    if(!name) return alert('名前を入力してください');
-    if(!sampleBlob) return alert('先に声サンプルを録音してください');
-    setStatus('参加者登録中...');
-    const sampleBase64=await blobToBase64(sampleBlob);
-    await postNoCors({action:'registerParticipant',name,displayName:name,sampleBase64,mimeType:sampleBlob.type||'audio/webm'});
-    setStatus('参加者登録を送信しました');
-    els.pName.value=''; sampleBlob=null;
-    setTimeout(async()=>{await refreshParticipants(); setStatus('参加者一覧を更新しました');},1500);
-  });
-
-  /* ── create meeting ── */
-  els.createMeeting.addEventListener('click', async () => {
-    const title=els.meetingTitle.value.trim();
-    if(!title) return alert('会議名を入力してください');
-    const ids=[...document.querySelectorAll('input[name="participant"]:checked')].map(el=>el.value);
-    const res=await jsonp('createMeeting',{title,participantIds:ids.join(',')});
-    if(!res.ok) return alert(res.error||'会議作成失敗');
-    currentMeetingId=res.meetingId;
-    els.meetingInfo.innerHTML='<div class="meeting-tag">ID <span>'+escapeHtml(currentMeetingId)+'</span></div>';
-    els.transcripts.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
-    els.result.innerHTML='<p class="empty-state">議事録生成後に表示されます</p>';
-    els.speakerMapStep.style.display='none';
-    rawSegments=[]; rawMinutes={}; speakerMap={};
-    setStatus('会議を作成しました');
-  });
-
-  /* ── meeting recording ── */
-  els.startMeetingRec.addEventListener('click', async () => {
-    if(!currentMeetingId) return alert('先に会議を作成してください');
-    meetingBlob=null; meetingChunks=[];
-    meetingStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    meetingRecorder=new MediaRecorder(meetingStream);
-    meetingRecorder.ondataavailable=e=>{if(e.data?.size>0)meetingChunks.push(e.data);};
-    meetingRecorder.onstop=()=>{
-      meetingBlob=new Blob(meetingChunks,{type:meetingRecorder.mimeType||'audio/webm'});
-      stopTracks(meetingStream); meetingStream=null;
-      els.startMeetingRec.innerHTML='録音開始';
-      els.startMeetingRec.disabled=false; els.stopMeetingRec.disabled=true;
-      setStatus('会議録音を保存しました');
-    };
-    meetingRecorder.start();
-    els.startMeetingRec.innerHTML='<span class="rec-dot"></span>録音中...';
-    els.startMeetingRec.disabled=true; els.stopMeetingRec.disabled=false;
-    setStatus('会議録音中');
-  });
-
-  els.stopMeetingRec.addEventListener('click',()=>{
-    if(meetingRecorder&&meetingRecorder.state!=='inactive') meetingRecorder.stop();
-  });
-
-  /* ── upload ── */
-  els.uploadMeeting.addEventListener('click', async () => {
-    if(!currentMeetingId) return alert('先に会議を作成してください');
-    if(!meetingBlob) return alert('先に会議を録音してください');
-    setStatus('音声アップロード中...');
-    const audioBase64=await blobToBase64(meetingBlob);
-    await postNoCors({action:'uploadMeetingAudio',meetingId:currentMeetingId,audioBase64,mimeType:meetingBlob.type||'audio/webm'});
-    setStatus('音声の送信を開始しました');
-  });
-
-  /* ── process ── */
-  els.processMeeting.addEventListener('click', async () => {
-    if(!currentMeetingId) return alert('先に会議を作成してください');
-    setStatus('議事録生成中...\n文字起こしに数分かかることがあります');
-    const res=await jsonp('processMeeting',{meetingId:currentMeetingId});
-    if(!res.ok) return alert(res.error||'処理失敗');
-
-    rawSegments=res.segments||[];
-    rawMinutes=res.minutes||{};
-
-    // 話者ラベルを収集してマップ初期化
-    speakerMap={};
-    rawSegments.forEach(s=>{
-      const label=s.speaker_label||'';
-      if(label && !(label in speakerMap)){
-        // GASがすでに名前を当てていればそれをデフォルトに
-        speakerMap[label]=s.speaker_name||label;
+      if(s==='UPLOADED'){
+        stopPoll();
+        showUploadDone();
+        setProcessBtn(true);
+        setStatus('アップロード完了 ✓\n「議事録を生成」を押してください');
+      } else if(s==='UPLOAD_ERROR'){
+        stopPoll();
+        showUploadError(res.error_message||'アップロードエラー');
+        setStatus('アップロードエラー: '+( res.error_message||'不明'));
+      } else if(s==='DONE'){
+        // すでに処理済みの会議を再確認した場合
+        stopPoll();
+        showUploadDone();
+        setProcessBtn(true);
+      } else if(attempts>=maxAttempts){
+        stopPoll();
+        showUploadError('タイムアウト：スプレッドシートのstatus列を確認してください');
+        setStatus('アップロード確認がタイムアウトしました');
       }
-    });
-
-    // 話者修正UIを表示
-    buildSpeakerMapUI();
-    els.speakerMapStep.style.display='block';
-
-    // 発言ログ・議事録を描画
-    renderTranscripts();
-    renderMinutes();
-
-    setStatus('議事録生成が完了しました ✓\n話者名がズレていたら「話者名の修正」で編集してください');
-  });
-
-  /* ── speaker map UI ── */
-  function buildSpeakerMapUI(){
-    els.speakerMapList.innerHTML='';
-    els.applyBanner.classList.remove('visible');
-    Object.keys(speakerMap).forEach(label=>{
-      const row=document.createElement('div');
-      row.className='speaker-map-row';
-      const badge=document.createElement('div');
-      badge.className='speaker-label-badge';
-      badge.textContent=label;
-      const arrow=document.createElement('div');
-      arrow.className='speaker-arrow';
-      arrow.textContent='→';
-      const inp=document.createElement('input');
-      inp.type='text';
-      inp.className='speaker-name-input';
-      inp.value=speakerMap[label];
-      inp.placeholder='名前を入力';
-      inp.dataset.label=label;
-      inp.addEventListener('input',()=>{
-        els.applyBanner.classList.add('visible');
-      });
-      row.appendChild(badge);
-      row.appendChild(arrow);
-      row.appendChild(inp);
-      els.speakerMapList.appendChild(row);
-    });
-  }
-
-  /* ── apply speaker map ── */
-  els.applySpeakerMap.addEventListener('click',()=>{
-    // inputから最新の名前を取得
-    document.querySelectorAll('.speaker-name-input').forEach(inp=>{
-      const label=inp.dataset.label;
-      const name=inp.value.trim()||label;
-      speakerMap[label]=name;
-    });
-    els.applyBanner.classList.remove('visible');
-    renderTranscripts();
-    renderMinutes();
-    setStatus('話者名を更新しました ✓');
-  });
-
-  /* ── render transcripts ── */
-  function renderTranscripts(){
-    if(rawSegments.length===0){
-      els.transcripts.innerHTML='<p class="empty-state">発言ログなし</p>';
-      return;
+      // CREATED / PROCESSING などはループ継続
+    } catch(e){
+      // 通信エラーは無視してリトライ
     }
-    els.transcripts.innerHTML='<div class="transcript-list"></div>';
-    const list=els.transcripts.querySelector('.transcript-list');
-    rawSegments.forEach(s=>{
-      const label=s.speaker_label||'';
-      const name=speakerMap[label]||s.speaker_name||label||'不明';
-      const sec=(s.start_sec!==''&&s.start_sec!==null)?Math.floor(Number(s.start_sec)):null;
-      const timeStr=sec!==null?formatTime(sec):'';
-      const div=document.createElement('div');
-      div.className='transcript-item';
-      div.innerHTML=
-        '<div class="transcript-time">'+escapeHtml(timeStr)+'</div>'+
-        '<div class="transcript-body">'+
-          '<div class="transcript-speaker">'+escapeHtml(name)+'</div>'+
-          '<div class="transcript-text">'+escapeHtml(s.text||'')+'</div>'+
-        '</div>';
-      list.appendChild(div);
-    });
+  }, 5000);
+}
+
+function stopPoll(){
+  if(pollTimer){ clearInterval(pollTimer); pollTimer=null; }
+}
+
+function showUploadWaiting(){
+  els.uploadStatus.classList.add('visible');
+  els.uploadIcon.textContent='⏳';
+  els.uploadText.innerHTML='<strong>アップロード確認中...</strong><br>GASでの処理を待っています';
+  els.uploadProgress.className='progress-bar indeterminate';
+}
+function showUploadDone(){
+  els.uploadStatus.classList.add('visible');
+  els.uploadIcon.textContent='✅';
+  els.uploadText.innerHTML='<strong>アップロード完了</strong><br>議事録を生成できます';
+  els.uploadProgress.className='progress-bar';
+  els.uploadProgress.style.width='100%';
+  els.uploadProgress.style.background='var(--success)';
+}
+function showUploadError(msg){
+  els.uploadStatus.classList.add('visible');
+  els.uploadIcon.textContent='❌';
+  els.uploadText.innerHTML='<strong>アップロード失敗</strong><br>'+escapeHtml(msg);
+  els.uploadProgress.className='progress-bar';
+  els.uploadProgress.style.width='100%';
+  els.uploadProgress.style.background='var(--danger)';
+}
+
+function setProcessBtn(enabled){
+  els.processMeeting.disabled=!enabled;
+  els.processHint.style.display=enabled?'none':'block';
+}
+
+/* ── process ── */
+els.processMeeting.addEventListener('click', async () => {
+  if(!currentMeetingId) return alert('先に会議を作成してください');
+  setStatus('議事録生成中...\n文字起こしに数分かかることがあります');
+  els.processMeeting.disabled=true;
+  const res=await jsonp('processMeeting',{meetingId:currentMeetingId});
+  els.processMeeting.disabled=false;
+  if(!res.ok) return alert(res.error||'処理失敗');
+
+  rawSegments=res.segments||[];
+  rawMinutes=res.minutes||{};
+  speakerMap={};
+  rawSegments.forEach(s=>{
+    const label=s.speaker_label||'';
+    if(label&&!(label in speakerMap)) speakerMap[label]=s.speaker_name||label;
+  });
+
+  buildSpeakerMapUI();
+  els.speakerMapStep.style.display='block';
+  renderTranscripts();
+  renderMinutes();
+  setStatus('議事録生成が完了しました ✓\n話者名がズレていたら「話者名の修正」で編集してください');
+});
+
+/* ── speaker map ── */
+function buildSpeakerMapUI(){
+  els.speakerMapList.innerHTML='';
+  els.applyBanner.classList.remove('visible');
+  Object.keys(speakerMap).forEach(label=>{
+    const row=document.createElement('div');
+    row.className='speaker-map-row';
+    const badge=document.createElement('div');
+    badge.className='speaker-label-badge';
+    badge.textContent=label;
+    const arrow=document.createElement('div');
+    arrow.className='speaker-arrow';
+    arrow.textContent='→';
+    const inp=document.createElement('input');
+    inp.type='text'; inp.className='speaker-name-input';
+    inp.value=speakerMap[label]; inp.placeholder='名前を入力';
+    inp.dataset.label=label;
+    inp.addEventListener('input',()=>els.applyBanner.classList.add('visible'));
+    row.appendChild(badge); row.appendChild(arrow); row.appendChild(inp);
+    els.speakerMapList.appendChild(row);
+  });
+}
+
+els.applySpeakerMap.addEventListener('click',()=>{
+  document.querySelectorAll('.speaker-name-input').forEach(inp=>{
+    speakerMap[inp.dataset.label]=inp.value.trim()||inp.dataset.label;
+  });
+  els.applyBanner.classList.remove('visible');
+  renderTranscripts();
+  renderMinutes();
+  setStatus('話者名を更新しました ✓');
+});
+
+/* ── render ── */
+function renderTranscripts(){
+  if(!rawSegments.length){
+    els.transcripts.innerHTML='<p class="empty-state">発言ログなし</p>'; return;
   }
+  els.transcripts.innerHTML='<div class="transcript-list"></div>';
+  const list=els.transcripts.querySelector('.transcript-list');
+  rawSegments.forEach(s=>{
+    const label=s.speaker_label||'';
+    const name=speakerMap[label]||s.speaker_name||label||'不明';
+    const sec=(s.start_sec!==''&&s.start_sec!==null)?Math.floor(Number(s.start_sec)):null;
+    const timeStr=sec!==null?formatTime(sec):'';
+    const div=document.createElement('div');
+    div.className='transcript-item';
+    div.innerHTML=
+      '<div class="transcript-time">'+escapeHtml(timeStr)+'</div>'+
+      '<div class="transcript-body">'+
+        '<div class="transcript-speaker">'+escapeHtml(name)+'</div>'+
+        '<div class="transcript-text">'+escapeHtml(s.text||'')+'</div>'+
+      '</div>';
+    list.appendChild(div);
+  });
+}
 
-  /* ── render minutes ── */
-  function renderMinutes(){
-    const m=rawMinutes;
-    els.result.innerHTML='';
-
-    // 議事録テキスト内の話者名も置換
-    const replaceSpeakers=(text)=>{
-      if(typeof text!=='string') return text;
-      let t=text;
-      Object.keys(speakerMap).forEach(label=>{
-        t=t.replaceAll(label, speakerMap[label]);
-      });
-      return t;
-    };
-
-    const sections=[
-      {key:'summary',label:'サマリー',type:'text'},
-      {key:'decisions',label:'決定事項',type:'list'},
-      {key:'todos',label:'ToDo',type:'list'},
-      {key:'deadlines',label:'デッドライン',type:'list'},
-      {key:'pending_items',label:'保留事項',type:'list'},
-      {key:'next_actions',label:'次のアクション',type:'list'},
-    ];
-    const block=document.createElement('div');
-    block.className='minutes-block';
-    sections.forEach(sec=>{
-      const val=m[sec.key];
-      if(!val||(Array.isArray(val)&&val.length===0)) return;
-      const section=document.createElement('div');
-      section.className='minutes-section';
-      section.innerHTML='<div class="minutes-section-head">'+escapeHtml(sec.label)+'</div>';
-      const body=document.createElement('div');
-      body.className='minutes-section-body';
-      if(sec.type==='text'){
-        body.textContent=replaceSpeakers(val);
-      } else {
-        (Array.isArray(val)?val:[]).forEach(item=>{
-          const row=document.createElement('div');
-          row.className='minutes-list-item';
-          const text=typeof item==='object'
-            ?JSON.stringify(item,null,0).replace(/[{}"]/g,'').replace(/,/g,' / ')
-            :String(item);
-          row.appendChild(document.createTextNode(replaceSpeakers(text)));
-          body.appendChild(row);
-        });
-      }
-      section.appendChild(body);
-      block.appendChild(section);
-    });
-    if(!block.children.length){
-      els.result.innerHTML='<p class="empty-state">議事録データなし</p>';
+function renderMinutes(){
+  const m=rawMinutes;
+  els.result.innerHTML='';
+  const replaceSpeakers=t=>{
+    if(typeof t!=='string') return t;
+    Object.keys(speakerMap).forEach(l=>{ t=t.replaceAll(l,speakerMap[l]); });
+    return t;
+  };
+  const sections=[
+    {key:'summary',label:'サマリー',type:'text'},
+    {key:'decisions',label:'決定事項',type:'list'},
+    {key:'todos',label:'ToDo',type:'list'},
+    {key:'deadlines',label:'デッドライン',type:'list'},
+    {key:'pending_items',label:'保留事項',type:'list'},
+    {key:'next_actions',label:'次のアクション',type:'list'},
+  ];
+  const block=document.createElement('div');
+  block.className='minutes-block';
+  sections.forEach(sec=>{
+    const val=m[sec.key];
+    if(!val||(Array.isArray(val)&&!val.length)) return;
+    const section=document.createElement('div');
+    section.className='minutes-section';
+    section.innerHTML='<div class="minutes-section-head">'+escapeHtml(sec.label)+'</div>';
+    const body=document.createElement('div');
+    body.className='minutes-section-body';
+    if(sec.type==='text'){
+      body.textContent=replaceSpeakers(val);
     } else {
-      els.result.appendChild(block);
+      (Array.isArray(val)?val:[]).forEach(item=>{
+        const row=document.createElement('div');
+        row.className='minutes-list-item';
+        const text=typeof item==='object'
+          ?JSON.stringify(item,null,0).replace(/[{}"]/g,'').replace(/,/g,' / ')
+          :String(item);
+        row.appendChild(document.createTextNode(replaceSpeakers(text)));
+        body.appendChild(row);
+      });
     }
+    section.appendChild(body);
+    block.appendChild(section);
+  });
+  if(!block.children.length){
+    els.result.innerHTML='<p class="empty-state">議事録データなし</p>';
+  } else {
+    els.result.appendChild(block);
   }
+}
 
-  /* ── helpers ── */
-  async function refreshParticipants(){
-    const res=await jsonp('listParticipants',{});
-    els.participants.innerHTML='';
-    (res.participants||[]).forEach(p=>{
-      const label=document.createElement('label');
-      label.className='chk-label';
-      label.innerHTML='<input type="checkbox" name="participant" value="'+escapeHtml(p.participant_id)+'"><span>'+escapeHtml(p.display_name||p.name)+'</span>';
-      els.participants.appendChild(label);
-    });
-  }
+/* ── helpers ── */
+async function refreshParticipants(){
+  const res=await jsonp('listParticipants',{});
+  els.participants.innerHTML='';
+  (res.participants||[]).forEach(p=>{
+    const label=document.createElement('label');
+    label.className='chk-label';
+    label.innerHTML='<input type="checkbox" name="participant" value="'+escapeHtml(p.participant_id)+'"><span>'+escapeHtml(p.display_name||p.name)+'</span>';
+    els.participants.appendChild(label);
+  });
+}
 
-  function formatTime(totalSec){
-    const m=Math.floor(totalSec/60), s=totalSec%60;
-    return m+':'+String(s).padStart(2,'0');
-  }
+function formatTime(totalSec){
+  const m=Math.floor(totalSec/60),s=totalSec%60;
+  return m+':'+String(s).padStart(2,'0');
+}
 
-  function jsonp(action,params){
-    return new Promise((resolve,reject)=>{
-      const cbName='cb_'+Date.now()+'_'+Math.floor(Math.random()*1e5);
-      const script=document.createElement('script');
-      const url=new URL(GAS_URL);
-      url.searchParams.set('api','1');
-      url.searchParams.set('action',action);
-      url.searchParams.set('callback',cbName);
-      Object.keys(params||{}).forEach(k=>url.searchParams.set(k,params[k]));
-      let done=false;
-      window[cbName]=data=>{done=true;resolve(data);cleanup();};
-      script.onerror=()=>{reject(new Error('JSONP通信に失敗しました'));cleanup();};
-      function cleanup(){delete window[cbName];script.parentNode?.removeChild(script);}
-      document.body.appendChild(script);
-      script.src=url.toString();
-      setTimeout(()=>{if(!done){reject(new Error('タイムアウト'));cleanup();}},120000);
-    });
-  }
+function jsonp(action,params){
+  return new Promise((resolve,reject)=>{
+    const cbName='cb_'+Date.now()+'_'+Math.floor(Math.random()*1e5);
+    const script=document.createElement('script');
+    const url=new URL(GAS_URL);
+    url.searchParams.set('api','1');
+    url.searchParams.set('action',action);
+    url.searchParams.set('callback',cbName);
+    Object.keys(params||{}).forEach(k=>url.searchParams.set(k,params[k]));
+    let done=false;
+    window[cbName]=data=>{done=true;resolve(data);cleanup();};
+    script.onerror=()=>{reject(new Error('JSONP通信に失敗しました'));cleanup();};
+    function cleanup(){delete window[cbName];script.parentNode?.removeChild(script);}
+    document.body.appendChild(script);
+    script.src=url.toString();
+    setTimeout(()=>{if(!done){reject(new Error('タイムアウト'));cleanup();}},120000);
+  });
+}
 
-  async function postNoCors(body){
-    await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
-  }
+async function postNoCors(body){
+  await fetch(GAS_URL,{method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+}
 
-  function blobToBase64(blob){
-    return new Promise((resolve,reject)=>{
-      const r=new FileReader();
-      r.onloadend=()=>resolve(String(r.result).split(',')[1]);
-      r.onerror=reject;
-      r.readAsDataURL(blob);
-    });
-  }
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onloadend=()=>resolve(String(r.result).split(',')[1]);
+    r.onerror=reject;
+    r.readAsDataURL(blob);
+  });
+}
 
-  function stopTracks(stream){stream?.getTracks().forEach(t=>t.stop());}
-  function setStatus(msg){els.status.textContent=msg;}
-  function escapeHtml(str){
-    return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
-  }
-  </script>
+function stopTracks(stream){stream?.getTracks().forEach(t=>t.stop());}
+function setStatus(msg){els.status.textContent=msg;}
+function escapeHtml(str){
+  return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;')
+    .replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+}
+</script>
 </body>
 </html>
